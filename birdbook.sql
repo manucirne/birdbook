@@ -41,9 +41,7 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO` (
   PRIMARY KEY (`username`),
   CONSTRAINT `fk_USUARIO_ENDERECO1`
     FOREIGN KEY (`cidade`)
-    REFERENCES `birdbook`.`CIDADE` (`cidade`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `birdbook`.`CIDADE` (`cidade`));
 
 
 -- -----------------------------------------------------
@@ -69,14 +67,10 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` (
   PRIMARY KEY (`username`, `tag_PASSARO`),
   CONSTRAINT `fk_USUARIO_PREFERE_PASSARO_USUARIO1`
     FOREIGN KEY (`username`)
-    REFERENCES `birdbook`.`USUARIO` (`username`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `birdbook`.`USUARIO` (`username`),
   CONSTRAINT `fk_USUARIO_PREFERE_PASSARO_PASSARO1`
     FOREIGN KEY (`tag_PASSARO`)
-    REFERENCES `birdbook`.`PASSARO` (`tag_PASSARO`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `birdbook`.`PASSARO` (`tag_PASSARO`));
 
 
 -- -----------------------------------------------------
@@ -104,14 +98,10 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_PASSARO_POST` (
   PRIMARY KEY (`tag_PASSARO`, `idPOST`),
   CONSTRAINT `fk_TAG_PASSARO_PASSARO1`
     FOREIGN KEY (`tag_PASSARO`)
-    REFERENCES `birdbook`.`PASSARO` (`tag_PASSARO`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `birdbook`.`PASSARO` (`tag_PASSARO`),
   CONSTRAINT `fk_TAG_PASSARO_POST1`
     FOREIGN KEY (`idPOST`)
-    REFERENCES `birdbook`.`POST` (`idPOST`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `birdbook`.`POST` (`idPOST`));
 
 
 -- -----------------------------------------------------
@@ -140,19 +130,13 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`VISUALIZACAO` (
   PRIMARY KEY (`idACESSO`, `idPOST`, `stamp`),
   CONSTRAINT `fk_VISUALIZACAO_ACESSO1`
     FOREIGN KEY (`idACESSO`)
-    REFERENCES `birdbook`.`ACESSO` (`idACESSO`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `birdbook`.`ACESSO` (`idACESSO`),
   CONSTRAINT `fk_VISUALIZACAO_POST1`
     FOREIGN KEY (`idPOST`)
-    REFERENCES `birdbook`.`POST` (`idPOST`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `birdbook`.`POST` (`idPOST`),
   CONSTRAINT `fk_VISUALIZACAO_USUARIO1`
     FOREIGN KEY (`username`)
-    REFERENCES `birdbook`.`USUARIO` (`username`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `birdbook`.`USUARIO` (`username`));
 
 
 -- -----------------------------------------------------
@@ -166,14 +150,10 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_USUARIO_POST` (
   PRIMARY KEY (`username`, `idPOST`),
   CONSTRAINT `fk_TAG_USUARIO_USUARIO1`
     FOREIGN KEY (`username`)
-    REFERENCES `birdbook`.`USUARIO` (`username`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `birdbook`.`USUARIO` (`username`),
   CONSTRAINT `fk_TAG_USUARIO_POST1`
     FOREIGN KEY (`idPOST`)
-    REFERENCES `birdbook`.`POST` (`idPOST`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    REFERENCES `birdbook`.`POST` (`idPOST`));
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
