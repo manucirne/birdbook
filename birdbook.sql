@@ -7,12 +7,22 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema birdbook
 -- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `birdbook` ;
+
+-- -----------------------------------------------------
+-- Schema birdbook
+-- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `birdbook` DEFAULT CHARACTER SET utf8 ;
+-- -----------------------------------------------------
+-- Schema birdbook
+-- -----------------------------------------------------
 USE `birdbook` ;
 
 -- -----------------------------------------------------
--- Table `birdbook`.`ENDERECO`
+-- Table `birdbook`.`CIDADE`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `birdbook`.`CIDADE` ;
+
 CREATE TABLE IF NOT EXISTS `birdbook`.`CIDADE` (
   `cidade` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`cidade`));
@@ -21,13 +31,15 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`CIDADE` (
 -- -----------------------------------------------------
 -- Table `birdbook`.`USUARIO`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `birdbook`.`USUARIO` ;
+
 CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO` (
   `username` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `nome` VARCHAR(45) NOT NULL,
-  `cidade` INT NOT NULL,
+  `cidade` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`username`),
-  CONSTRAINT `fk_USUARIO_CIDADE`
+  CONSTRAINT `fk_USUARIO_ENDERECO1`
     FOREIGN KEY (`cidade`)
     REFERENCES `birdbook`.`CIDADE` (`cidade`)
     ON DELETE NO ACTION
@@ -37,6 +49,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO` (
 -- -----------------------------------------------------
 -- Table `birdbook`.`PASSARO`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `birdbook`.`PASSARO` ;
+
 CREATE TABLE IF NOT EXISTS `birdbook`.`PASSARO` (
   `tag_PASSARO` VARCHAR(20) NOT NULL,
   `especie` VARCHAR(45) NULL,
@@ -47,6 +61,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`PASSARO` (
 -- -----------------------------------------------------
 -- Table `birdbook`.`USUARIO_PREFERE_PASSARO`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` ;
+
 CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` (
   `username` VARCHAR(45) NOT NULL,
   `tag_PASSARO` VARCHAR(20) NOT NULL,
@@ -66,6 +82,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` (
 -- -----------------------------------------------------
 -- Table `birdbook`.`POST`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `birdbook`.`POST` ;
+
 CREATE TABLE IF NOT EXISTS `birdbook`.`POST` (
   `idPOST` INT NOT NULL AUTO_INCREMENT,
   `titulo` VARCHAR(45) NOT NULL,
@@ -78,6 +96,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`POST` (
 -- -----------------------------------------------------
 -- Table `birdbook`.`TAG_PASSARO_POST`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `birdbook`.`TAG_PASSARO_POST` ;
+
 CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_PASSARO_POST` (
   `tag_PASSARO` VARCHAR(20) NOT NULL,
   `idPOST` INT NOT NULL,
@@ -97,6 +117,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_PASSARO_POST` (
 -- -----------------------------------------------------
 -- Table `birdbook`.`ACESSO`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `birdbook`.`ACESSO` ;
+
 CREATE TABLE IF NOT EXISTS `birdbook`.`ACESSO` (
   `idACESSO` INT NOT NULL AUTO_INCREMENT,
   `IP` VARCHAR(45) NULL,
@@ -108,12 +130,14 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`ACESSO` (
 -- -----------------------------------------------------
 -- Table `birdbook`.`VISUALIZACAO`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `birdbook`.`VISUALIZACAO` ;
+
 CREATE TABLE IF NOT EXISTS `birdbook`.`VISUALIZACAO` (
   `idACESSO` INT NOT NULL,
   `idPOST` INT NOT NULL,
   `username` VARCHAR(45) NOT NULL,
-  `time_stamp_vis` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idACESSO`, `idPOST`, `time_stamp_vis`),
+  `stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idACESSO`, `idPOST`, `stamp`),
   CONSTRAINT `fk_VISUALIZACAO_ACESSO1`
     FOREIGN KEY (`idACESSO`)
     REFERENCES `birdbook`.`ACESSO` (`idACESSO`)
@@ -134,6 +158,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`VISUALIZACAO` (
 -- -----------------------------------------------------
 -- Table `birdbook`.`TAG_USUARIO_POST`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `birdbook`.`TAG_USUARIO_POST` ;
+
 CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_USUARIO_POST` (
   `username` VARCHAR(45) NOT NULL,
   `idPOST` INT NOT NULL,
@@ -149,3 +175,6 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_USUARIO_POST` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
