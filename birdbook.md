@@ -6,12 +6,12 @@
 
 ### Colunas:
 
-| Coluna     | Tipo de dado | Atributos         | Padrão | Descrição                                                  |
-| ---------- | ------------ | ----------------- | ------ | ---------------------------------------------------------- |
-| `username` | VARCHAR(45)  | PRIMARY, Not null |        |                                                            |
-| `email`    | VARCHAR(45)  | Not null          |        |                                                            |
-| `nome`     | VARCHAR(45)  | Not null          |        |                                                            |
-| `idCIDADE` | VARCHAR(45)  | PRIMARY, Not null |        | **foreign key** para coluna `idCIDADE` na tabela `CIDADE`. |
+| Coluna     | Tipo de dado | Atributos         | Padrão | Descrição                                                    |
+| ---------- | ------------ | ----------------- | ------ | ------------------------------------------------------------ |
+| `username` | VARCHAR(45)  | PRIMARY, Not null |        | username que define o usuário - único PK                     |
+| `email`    | VARCHAR(45)  | Not null          |        | Email do usuário                                             |
+| `nome`     | VARCHAR(45)  | Not null          |        | Nome do usuário                                              |
+| `idCIDADE` | VARCHAR(45)  | PRIMARY, Not null |        | Cidade em que o usuário mora<br /><br />**foreign key** para a coluna `idCIDADE` na tabela `CIDADE`. |
 
 ### Indices:
 
@@ -26,11 +26,11 @@
 
 ### Colunas:
 
-| Coluna         | Tipo de dado | Atributos         | Padrão | Descrição                                                                      |
-| -------------- | ------------ | ----------------- | ------ | ------------------------------------------------------------------------------ |
-| `tag_PASSARO`  | VARCHAR(20)  | PRIMARY, Not null |        | tag é único utilizado para identificar os pássaros e para fazer tags nos posts |
-| `especie`      | VARCHAR(45)  |                   |        | Espécie de cada pássaro                                                        |
-| `nome_popular` | VARCHAR(45)  |                   |        | Nome popular de cada pássaro                                                   |
+| Coluna         | Tipo de dado | Atributos         | Padrão | Descrição                  |
+| -------------- | ------------ | ----------------- | ------ | -------------------------- |
+| `tag_PASSARO`  | VARCHAR(20)  | PRIMARY, Not null |        | tag do pássaro             |
+| `especie`      | VARCHAR(45)  |                   |        | espécie do pássaro         |
+| `nome_popular` | VARCHAR(45)  |                   |        | nome mais usual do pássaro |
 
 ### Indices:
 
@@ -44,10 +44,10 @@
 
 ### Colunas:
 
-| Coluna        | Tipo de dado | Atributos         | Padrão | Descrição                                                      |
-| ------------- | ------------ | ----------------- | ------ | -------------------------------------------------------------- |
-| `username`    | VARCHAR(45)  | PRIMARY, Not null |        | **foreign key** para Coluna `username` na Tabela `USUARIO`.    |
-| `tag_PASSARO` | VARCHAR(20)  | PRIMARY, Not null |        | **foreign key** para Coluna `tag_PASSARO` na Tabela `PASSARO`. |
+| Coluna        | Tipo de dado | Atributos         | Padrão | Descrição                                                    |
+| ------------- | ------------ | ----------------- | ------ | ------------------------------------------------------------ |
+| `username`    | VARCHAR(45)  | PRIMARY, Not null |        | username do usuário que prefere o pássaro<br /><br />**foreign key** para a coluna `username` na tabela `USUARIO`. |
+| `tag_PASSARO` | VARCHAR(20)  | PRIMARY, Not null |        | tag do pássaro que é preferido pelo usuário<br /><br />**foreign key** para a coluna `tag_PASSARO` na tabela `PASSARO`. |
 
 ### Indices:
 
@@ -62,11 +62,11 @@
 
 ### Colunas:
 
-| Coluna     | Tipo de dado | Atributos         | Padrão | Descrição |
-| ---------- | ------------ | ----------------- | ------ | --------- |
-| `cidade`   | VARCHAR(45)  | Not null          |        |           |
-| `estado`   | VARCHAR(45)  | Not null          |        |           |
-| `idCIDADE` | VARCHAR(45)  | PRIMARY, Not null |        |           |
+| Coluna     | Tipo de dado | Atributos         | Padrão | Descrição                                              |
+| ---------- | ------------ | ----------------- | ------ | ------------------------------------------------------ |
+| `cidade`   | VARCHAR(45)  | Not null          |        |                                                        |
+| `estado`   | VARCHAR(45)  | Not null          |        | Estado ao qual a cidade pertence                       |
+| `idCIDADE` | VARCHAR(45)  | PRIMARY, Not null |        | Id da cidade em que o usuário mora - e seu nome também |
 
 ### Indices:
 
@@ -80,13 +80,13 @@
 
 ### Colunas:
 
-| Coluna     | Tipo de dado | Atributos                          | Padrão | Descrição |
-| ---------- | ------------ | ---------------------------------- | ------ | --------- |
-| `idPOST`   | INT          | PRIMARY, Auto increments, Not null |        |           |
-| `titulo`   | VARCHAR(45)  | Not null                           |        |           |
-| `texto`    | VARCHAR(255) |                                    |        |           |
-| `URL_foto` | VARCHAR(100) |                                    |        |           |
-| `deleta`   | TINYINT      | Not null                           |        |           |
+| Coluna     | Tipo de dado | Atributos                          | Padrão | Descrição                                                                                 |
+| ---------- | ------------ | ---------------------------------- | ------ | ----------------------------------------------------------------------------------------- |
+| `idPOST`   | INT          | PRIMARY, Auto increments, Not null |        | id so post                                                                                |
+| `titulo`   | VARCHAR(45)  | Not null                           |        | títilo do post                                                                            |
+| `texto`    | VARCHAR(255) |                                    |        | id do texto                                                                               |
+| `URL_foto` | VARCHAR(100) |                                    |        | url da foto que pode estar relacionada ao post                                            |
+| `deleta`   | TINYINT      | Not null                           |        | define se o post foi ou não deletado, ou seja, se ele será ou não mostrado na rede social |
 
 ### Indices:
 
@@ -100,10 +100,10 @@
 
 ### Colunas:
 
-| Coluna        | Tipo de dado | Atributos         | Padrão | Descrição                                                      |
-| ------------- | ------------ | ----------------- | ------ | -------------------------------------------------------------- |
-| `tag_PASSARO` | VARCHAR(20)  | PRIMARY, Not null |        | **foreign key** para Coluna `tag_PASSARO` na Tabela `PASSARO`. |
-| `idPOST`      | INT          | PRIMARY, Not null |        | **foreign key** para Coluna `idPOST` na Tabela `POST`.         |
+| Coluna        | Tipo de dado | Atributos         | Padrão | Descrição                                                    |
+| ------------- | ------------ | ----------------- | ------ | ------------------------------------------------------------ |
+| `tag_PASSARO` | VARCHAR(20)  | PRIMARY, Not null |        | tag do pássaro que é mencionando no post<br /><br />**foreign key** para a coluna `tag_PASSARO` na tabela `PASSARO`. |
+| `idPOST`      | INT          | PRIMARY, Not null |        | id do post que menciona o pássaro<br /><br />**foreign key** para a coluna `idPOST` na tabela `POST`. |
 
 ### Indices:
 
@@ -118,12 +118,12 @@
 
 ### Colunas:
 
-| Coluna     | Tipo de dado  | Atributos         | Padrão | Descrição                                                   |
-| ---------- | ------------- | ----------------- | ------ | ----------------------------------------------------------- |
-| `idACESSO` | INT           | PRIMARY, Not null |        | **foreign key** para Coluna `idACESSO` na Tabela `ACESSO`.  |
-| `idPOST`   | INT           | PRIMARY, Not null |        | **foreign key** para Coluna `idPOST` na Tabela `POST`.      |
-| `username` | VARCHAR(45)   | Not null          |        | **foreign key** para Coluna `username` na Tabela `USUARIO`. |
-| `stamp`    | TIMESTAMP(11) | PRIMARY, Not null |        |                                                             |
+| Coluna     | Tipo de dado  | Atributos         | Padrão | Descrição                                                                                                          |
+| ---------- | ------------- | ----------------- | ------ | ------------------------------------------------------------------------------------------------------------------ |
+| `idACESSO` | INT           | PRIMARY, Not null |        | id do acesso em que a visualização ocorreu<br /><br />**foreign key** para a coluna `idACESSO` na tabela `ACESSO`. |
+| `idPOST`   | INT           | PRIMARY, Not null |        | id do post que foi visualizado<br /><br />**foreign key** para a coluna `idPOST` na tabela `POST`.                 |
+| `username` | VARCHAR(45)   | Not null          |        | usuário que executou a visualização<br /><br />**foreign key** para a coluna `username` na tabela `USUARIO`.       |
+| `stamp`    | TIMESTAMP(11) | PRIMARY, Not null |        | momento em que a visualização aconteceu                                                                            |
 
 ### Indices:
 
@@ -139,12 +139,12 @@
 
 ### Colunas:
 
-| Coluna     | Tipo de dado | Atributos                          | Padrão | Descrição                                                  |
-| ---------- | ------------ | ---------------------------------- | ------ | ---------------------------------------------------------- |
-| `idACESSO` | INT          | PRIMARY, Auto increments, Not null |        | ID único do acesso do usuário                              |
-| `IP`       | VARCHAR(45)  |                                    |        | IP de acesso                                               |
-| `Browser`  | VARCHAR(45)  |                                    |        | Browser/ User-Agent                                        |
-| `Aparelho` | VARCHAR(45)  |                                    |        | Aparelho que o usuário está utilizando para acessar o site |
+| Coluna     | Tipo de dado | Atributos                          | Padrão | Descrição                                                           |
+| ---------- | ------------ | ---------------------------------- | ------ | ------------------------------------------------------------------- |
+| `idACESSO` | INT          | PRIMARY, Auto increments, Not null |        | id do acesso                                                        |
+| `IP`       | VARCHAR(45)  |                                    |        | IP que foi usado para executar a visualização                       |
+| `Browser`  | VARCHAR(45)  |                                    |        | browser que foi utilizado no acesso em que a visualização aconteceu |
+| `Aparelho` | VARCHAR(45)  |                                    |        | aparelho utilizado para executar o acesso atrelado à visualização   |
 
 ### Indices:
 
@@ -158,14 +158,14 @@
 
 ### Colunas:
 
-| Coluna     | Tipo de dado | Atributos         | Padrão | Descrição                                                   |
-| ---------- | ------------ | ----------------- | ------ | ----------------------------------------------------------- |
-| `username` | VARCHAR(45)  | PRIMARY, Not null |        | **foreign key** para Coluna `username` na Tabela `USUARIO`. |
-| `idPOST`   | INT          | PRIMARY, Not null |        | **foreign key** para Coluna `idPOST` na Tabela `POST`.      |
+| Coluna     | Tipo de dado | Atributos         | Padrão | Descrição                                                                                                            |
+| ---------- | ------------ | ----------------- | ------ | -------------------------------------------------------------------------------------------------------------------- |
+| `username` | VARCHAR(45)  | PRIMARY, Not null |        | usernema do usuário ao qual o post pertence<br /><br />**foreign key** para a coluna `username` na tabela `USUARIO`. |
+| `idPOST`   | INT          | PRIMARY, Not null |        | is do post que pertence ao usuário<br /><br />**foreign key** para a coluna `idPOST` na tabela `POST`.               |
 
 ### Indices:
 
-| Nome                        | Coluna               | Tipo    | Descrição |
+| Nome                        | Colunas              | Tipo    | Descrição |
 | --------------------------- | -------------------- | ------- | --------- |
 | fk_TAG_USUARIO_USUARIO1_idx | `username`           | INDEX   |           |
 | fk_TAG_USUARIO_POST1_idx    | `idPOST`             | INDEX   |           |
