@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`POST` (
   `titulo` VARCHAR(45) NOT NULL,
   `texto` VARCHAR(255) NULL,
   `URL_foto` VARCHAR(100) NULL,
-  `deleta` TINYINT NOT NULL,
+  `deleta` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`idPOST`));
 
 
@@ -314,6 +314,42 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_USUARIO_POST` (
   CONSTRAINT `fk_TAG_USUARIO_POST1`
     FOREIGN KEY (`idPOST`)
     REFERENCES `birdbook`.`POST` (`idPOST`));
+    
+    
+-- -----------------------------------------------------
+-- Trigger `deletaTags`
+-- -----------------------------------------------------
+DROP TRIGGER IF EXISTS `deletaTags`;
+
+DELIMITER //
+CREATE TRIGGER deletaTags 
+AFTER UPDATE ON POST
+FOR EACH ROW
+BEGIN
+	IF NEW.deleta = TRUE THEN
+		DELETE FROM TAG_PASSARO_POST
+			WHERE idPOST = NEW.idPOST;
+		DELETE FROM TAG_USUARIO_POST 
+			WHERE idPOST = NEW.idPOST;
+		DELETE FROM VISUALIZACAO 
+			WHERE idPOST = NEW.idPOST;
+	END IF;
+END//
+
+-- -----------------------------------------------------
+-- Trigger `deletaAcesso`
+-- -----------------------------------------------------
+DROP TRIGGER IF EXISTS deletaAcesso;
+
+DELIMITER //
+CREATE TRIGGER deletaAcesso 
+AFTER DELETE ON VISUALIZACAO
+FOR EACH ROW
+BEGIN
+    DELETE FROM ACESSO 
+        WHERE idACESSO = NEW.idACESSO;
+END//
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
