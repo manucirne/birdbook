@@ -38,42 +38,44 @@ class Post():
                 cursor.execute('SELECT titulo, texto, URL_foto FROM POST WHERE idPOST = (%s) AND deleta = False', (idPOST))
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Post não encontrado')
+            return cursor.fetchone()
 
-    def lista_usuarios(self):
+    def lista_post(self):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('SELECT * FROM USUARIO')
+                cursor.execute('SELECT * FROM POST WHERE deleta = False')
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Usuários não podem ser mostrados')
+                raise ValueError(f'Posts não podem ser mostrados')
+            return cursor.fetchmany(30)
 
-    def muda_nome(self, username, novo_nome):
+    def muda_titulo(self, idPOST, novo_titulo):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('UPDATE USUARIO SET nome=%s where username=%s', (novo_nome, username))
+                cursor.execute('UPDATE POST SET titulo=%s where idPOST=%s', (novo_titulo, idPOST))
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Usuário com username = {username} não encontrado para ser modificado')
+                raise ValueError(f'Post com idPOST = {idPOST} não encontrado para ser modificado')
 
-    def muda_email(self, username, novo_email):
+    def muda_texto(self, idPOST, novo_texto):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('UPDATE USUARIO SET email=%s where username=%s', (novo_email, username))
+                cursor.execute('UPDATE POST SET texto=%s where idPOST=%s', (novo_texto, idPOST))
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Usuário com username = {username} não encontrado para ser modificado')
+                raise ValueError(f'POST com idPOST = {idPOST} não encontrado para ser modificado')
 
-    def muda_cidade(self, username, nova_cidade):
+    def muda_foto(self, idPOST, nova_foto):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('UPDATE USUARIO SET idCIDADE=%s where username=%s', (nova_cidade, username))
+                cursor.execute('UPDATE POST SET URL_foto=%s where idPOST=%s', (nova_foto, idPOST))
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Usuário com username = {username} não encontrado para ser modificado')
+                raise ValueError(f'POST com idPOST = {idPOST} não encontrado para ser modificado')
 
     
-    def remove(self, username):
+    def remove(self, idPOST):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('DELETE FROM USUARIO WHERE username = (%s)', (username))
+                cursor.execute('UPDATE POST SET deleta=1 where idPOST=(%s)', (idPOST))
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Não posso deletar o usuário com username = {username} na tabela usuário')
+                raise ValueError(f'Não posso deletar o post com idPOST = {idPOST} na tabela POST')
 
     def cria_tags(self,dici_tags, id_post):
         resp = {}
