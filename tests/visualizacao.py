@@ -7,38 +7,49 @@ class Visualizacao():
 
     def adiciona(self, idACESSO, idPOST, username):
         with self.conn.cursor() as cursor:
-            visuid = None
             try:
-                cursor.execute('INSERT INTO VISUALIZACAO (idACESSO,idPOST,username) VALUES (%s,%s,%s);', (idACESSO, idPOST, username))
-                cursor.execute('''
-                        SELECT LAST_INSERT_ID()
-                            FROM VISUALIZACAO;
-                    ''')
-                visuid =  cursor.fetchone()[0]
+                cursor.execute(
+                    'INSERT INTO VISUALIZACAO (idACESSO,idPOST,username) VALUES (%s,%s,%s);', (idACESSO, idPOST, username))
 
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Não posso inserir nova visualização')
 
-        return visuid
-
-    def lista_cidade(self):
+    def acha(self, idACESSO, idPOST, username):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('SELECT * FROM CIDADE')
-            except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Cidades não podem ser mostradas')
-            return cursor.fetchmany(100)
+                cursor.execute(
+                    'SELECT * FROM VISUALIZACAO WHERE idACESSO=%s and idPOST=%s and username=%s;', (idACESSO, idPOST, username))
+                res = cursor.fetchall()
+                if res:
+                    return res
 
-    def muda_cidade(self, cidade, nova_cidade):
+            except pymysql.err.IntegrityError as e:
+                raise ValueError(
+                    f'Não posso encontrar {idACESSO}, {idPOST}, {username} na tabela passaro')
+
+            return None
+
+    def lista(self):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('UPDATE CIDADE SET cidade=%s where cidade=%s', (nova_cidade, cidade))
+                cursor.execute(
+                    'SELECT * FROM VISUALIZACAO;')
+                res = cursor.fetchall()
+                if res:
+                    return res
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Cidade com nome = {cidade} não encontrado para ser modificado')
+                raise ValueError(
+                    f'Não posso listar a tabela passaro')
+            return None
 
-    def remove(self, cidade):
+    # Uma vizualização não pode ser alterada
+
+    def delete(self, idACESSO, idPOST, username):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('DELETE FROM CIDADE WHERE cidade = (%s)', (cidade))
+                cursor.execute(
+                    'DELETE FROM VISUALIZACAO WHERE idACESSO=%s and idPOST=%s and username=%s;', (idACESSO, idPOST, username))
+
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Não posso deletar o cidade com nome = {cidade} na tabela POST')
+                raise ValueError(
+                    f'Não posso encontrar {idACESSO}, {idPOST}, {username} na tabela passaro')

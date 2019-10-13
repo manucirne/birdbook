@@ -9,15 +9,12 @@ class Cidade():
         with self.conn.cursor() as cursor:
             cidadeid = None
             try:
-                cursor.execute('INSERT INTO CIDADE (cidade) VALUES (%s);', (cidade))
-                cursor.execute('''
-                        SELECT LAST_INSERT_ID()
-                            FROM CIDADE;
-                    ''')
-                cidadeid =  cursor.fetchone()[0]
+                cursor.execute(
+                    'INSERT INTO CIDADE (cidade) VALUES (%s);', (cidade))
 
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Não posso inserir {cidade} na tabela cidade')
+                raise ValueError(
+                    f'Não posso inserir {cidade} na tabela cidade')
 
         return cidadeid
 
@@ -32,13 +29,17 @@ class Cidade():
     def muda_cidade(self, cidade, nova_cidade):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('UPDATE CIDADE SET cidade=%s where cidade=%s', (nova_cidade, cidade))
+                cursor.execute(
+                    'UPDATE CIDADE SET cidade=%s where cidade=%s', (nova_cidade, cidade))
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Cidade com nome = {cidade} não encontrado para ser modificado')
+                raise ValueError(
+                    f'Cidade com nome = {cidade} não encontrado para ser modificado')
 
     def remove(self, cidade):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('DELETE FROM CIDADE WHERE cidade = (%s)', (cidade))
+                cursor.execute(
+                    'DELETE FROM CIDADE WHERE cidade = (%s)', (cidade))
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Não posso deletar o cidade com nome = {cidade} na tabela POST')
+                raise ValueError(
+                    f'Não posso deletar o cidade com nome = {cidade} na tabela POST')
