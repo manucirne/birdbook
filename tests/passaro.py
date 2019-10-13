@@ -5,7 +5,7 @@ class Passaro():
     def __init__(self, conn):
         self.conn = conn
 
-    def adiona(self, tag, especie, nome_pop):
+    def adiciona(self, tag, especie, nome_pop):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
@@ -21,12 +21,43 @@ class Passaro():
                     'SELECT * FROM PASSARO WHERE tag_PASSARO=%s;', (tag))
                 res = cursor.fetchone()
                 if res:
-                    return res[0]
+                    return res
+
                 else:
                     return None
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso encontrar {tag} na tabela passaro')
+
+    def acha_especie(self, especie):
+        with self.conn.cursor() as cursor:
+            try:
+                cursor.execute(
+                    'SELECT * FROM PASSARO WHERE especie=%s;', (especie))
+                res = cursor.fetchone()
+                if res:
+                    return res
+
+                else:
+                    return None
+            except pymysql.err.IntegrityError as e:
+                raise ValueError(
+                    f'Não posso encontrar {especie} na tabela passaro')
+
+    def acha_pop(self, nome_pop):
+        with self.conn.cursor() as cursor:
+            try:
+                cursor.execute(
+                    'SELECT * FROM PASSARO WHERE nome_popular=%s;', (nome_pop))
+                res = cursor.fetchone()
+                if res:
+                    return res
+
+                else:
+                    return None
+            except pymysql.err.IntegrityError as e:
+                raise ValueError(
+                    f'Não posso encontrar {nome_pop} na tabela passaro')
 
     def lista(self):
         with self.conn.cursor() as cursor:
@@ -46,7 +77,7 @@ class Passaro():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'UPDATE PASSARO SET especie=%s nome_popular=%s WHERE tag_PASSARO=%s;', (especie, nome_pop, tag))
+                    'UPDATE PASSARO SET especie=%s, nome_popular=%s WHERE tag_PASSARO=%s;', (especie, nome_pop, tag))
                 res = cursor.fetchone()
                 if res:
                     return res[0]
@@ -59,6 +90,7 @@ class Passaro():
     def remove(self, tag):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('DELETE FROM PASSARO WHERE tag=%s;', (tag))
+                cursor.execute(
+                    'DELETE FROM PASSARO WHERE tag_PASSARO=%s;', (tag))
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Não posso deletar {tag} na tabela passaro')
