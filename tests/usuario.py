@@ -72,7 +72,7 @@ class Usuario():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'DELETE FROM USUARIO WHERE username = (%s)', (username))
+                    'DELETE FROM USUARIO WHERE username="david"')
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso deletar o usuário com username = {username} na tabela usuário')
