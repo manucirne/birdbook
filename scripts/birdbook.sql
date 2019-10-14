@@ -5,25 +5,25 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema birdbok
+-- Schema birdbook
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `birdbok` ;
+DROP SCHEMA IF EXISTS `birdbook` ;
 
--- -----------------------------------------------------
--- Schema birdbok
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `birdbok` DEFAULT CHARACTER SET utf8 ;
 -- -----------------------------------------------------
 -- Schema birdbook
 -- -----------------------------------------------------
-USE `birdbok` ;
+CREATE SCHEMA IF NOT EXISTS `birdbook` DEFAULT CHARACTER SET utf8 ;
+-- -----------------------------------------------------
+-- Schema birdbook
+-- -----------------------------------------------------
+USE `birdbook` ;
 
 -- -----------------------------------------------------
--- Table `birdbok`.`CIDADE`
+-- Table `birdbook`.`CIDADE`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbok`.`CIDADE` ;
+DROP TABLE IF EXISTS `birdbook`.`CIDADE` ;
 
-CREATE TABLE IF NOT EXISTS `birdbok`.`CIDADE` (
+CREATE TABLE IF NOT EXISTS `birdbook`.`CIDADE` (
   `cidade` VARCHAR(45) NOT NULL COMMENT 'Nome da cidade',
   `estado` VARCHAR(45) NOT NULL COMMENT 'Estado ao qual a cidade pertence',
   `idCIDADE` INT NOT NULL AUTO_INCREMENT COMMENT 'Id da tabe',
@@ -32,11 +32,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `birdbok`.`USUARIO`
+-- Table `birdbook`.`USUARIO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbok`.`USUARIO` ;
+DROP TABLE IF EXISTS `birdbook`.`USUARIO` ;
 
-CREATE TABLE IF NOT EXISTS `birdbok`.`USUARIO` (
+CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO` (
   `username` VARCHAR(45) NOT NULL COMMENT 'username que define o usuário - único PK',
   `email` VARCHAR(45) NOT NULL COMMENT 'Email do usuário',
   `nome` VARCHAR(45) NOT NULL COMMENT 'Nome do usuário',
@@ -44,15 +44,15 @@ CREATE TABLE IF NOT EXISTS `birdbok`.`USUARIO` (
   PRIMARY KEY (`username`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_USUARIO_CIDADE1_idx` ON `birdbok`.`USUARIO` (`idCIDADE` ASC) VISIBLE;
+CREATE INDEX `fk_USUARIO_CIDADE1_idx` ON `birdbook`.`USUARIO` (`idCIDADE` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
--- Table `birdbok`.`PASSARO`
+-- Table `birdbook`.`PASSARO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbok`.`PASSARO` ;
+DROP TABLE IF EXISTS `birdbook`.`PASSARO` ;
 
-CREATE TABLE IF NOT EXISTS `birdbok`.`PASSARO` (
+CREATE TABLE IF NOT EXISTS `birdbook`.`PASSARO` (
   `tag_PASSARO` VARCHAR(20) NOT NULL COMMENT 'tag do pássaro',
   `especie` VARCHAR(45) NULL COMMENT 'espécie do pássaro',
   `nome_popular` VARCHAR(45) NULL COMMENT 'nome mais usual do pássaro',
@@ -61,25 +61,25 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `birdbok`.`USUARIO_PREFERE_PASSARO`
+-- Table `birdbook`.`USUARIO_PREFERE_PASSARO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbok`.`USUARIO_PREFERE_PASSARO` ;
+DROP TABLE IF EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` ;
 
-CREATE TABLE IF NOT EXISTS `birdbok`.`USUARIO_PREFERE_PASSARO` (
+CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` (
   `username` VARCHAR(45) NOT NULL COMMENT 'username do usuário que prefere o pássaro',
   `tag_PASSARO` VARCHAR(20) NOT NULL COMMENT 'tag do pássaro que é preferido pelo usuário',
   PRIMARY KEY (`username`, `tag_PASSARO`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_USUARIO_PREFERE_PASSARO_PASSARO1_idx` ON `birdbok`.`USUARIO_PREFERE_PASSARO` (`tag_PASSARO` ASC) VISIBLE;
+CREATE INDEX `fk_USUARIO_PREFERE_PASSARO_PASSARO1_idx` ON `birdbook`.`USUARIO_PREFERE_PASSARO` (`tag_PASSARO` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
--- Table `birdbok`.`POST`
+-- Table `birdbook`.`POST`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbok`.`POST` ;
+DROP TABLE IF EXISTS `birdbook`.`POST` ;
 
-CREATE TABLE IF NOT EXISTS `birdbok`.`POST` (
+CREATE TABLE IF NOT EXISTS `birdbook`.`POST` (
   `idPOST` INT NOT NULL AUTO_INCREMENT COMMENT 'id so post',
   `titulo` VARCHAR(45) NOT NULL COMMENT 'títilo do post',
   `texto` VARCHAR(255) NULL COMMENT 'id do texto',
@@ -90,25 +90,25 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `birdbok`.`TAG_PASSARO_POST`
+-- Table `birdbook`.`TAG_PASSARO_POST`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbok`.`TAG_PASSARO_POST` ;
+DROP TABLE IF EXISTS `birdbook`.`TAG_PASSARO_POST` ;
 
-CREATE TABLE IF NOT EXISTS `birdbok`.`TAG_PASSARO_POST` (
+CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_PASSARO_POST` (
   `tag_PASSARO` VARCHAR(20) NOT NULL COMMENT 'tag do pássaro que é mencionando no post',
   `idPOST` INT NOT NULL COMMENT 'id do post que menciona o pássaro',
   PRIMARY KEY (`tag_PASSARO`, `idPOST`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_TAG_PASSARO_POST1_idx` ON `birdbok`.`TAG_PASSARO_POST` (`idPOST` ASC) VISIBLE;
+CREATE INDEX `fk_TAG_PASSARO_POST1_idx` ON `birdbook`.`TAG_PASSARO_POST` (`idPOST` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
--- Table `birdbok`.`ACESSO`
+-- Table `birdbook`.`ACESSO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbok`.`ACESSO` ;
+DROP TABLE IF EXISTS `birdbook`.`ACESSO` ;
 
-CREATE TABLE IF NOT EXISTS `birdbok`.`ACESSO` (
+CREATE TABLE IF NOT EXISTS `birdbook`.`ACESSO` (
   `idACESSO` INT NOT NULL AUTO_INCREMENT COMMENT 'id do acesso',
   `IP` VARCHAR(45) NULL COMMENT 'IP que foi usado para executar a visualização',
   `Browser` VARCHAR(45) NULL COMMENT 'browser que foi utilizado no acesso em que a visualização aconteceu',
@@ -118,11 +118,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `birdbok`.`VISUALIZACAO`
+-- Table `birdbook`.`VISUALIZACAO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbok`.`VISUALIZACAO` ;
+DROP TABLE IF EXISTS `birdbook`.`VISUALIZACAO` ;
 
-CREATE TABLE IF NOT EXISTS `birdbok`.`VISUALIZACAO` (
+CREATE TABLE IF NOT EXISTS `birdbook`.`VISUALIZACAO` (
   `idACESSO` INT NOT NULL COMMENT 'id do acesso em que a visualização ocorreu',
   `idPOST` INT NOT NULL COMMENT 'id do post que foi visualizado',
   `username` VARCHAR(45) NOT NULL COMMENT 'usuário que executou a visualização',
@@ -130,44 +130,44 @@ CREATE TABLE IF NOT EXISTS `birdbok`.`VISUALIZACAO` (
   PRIMARY KEY (`idACESSO`, `idPOST`, `stamp`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_VISUALIZACAO_POST1_idx` ON `birdbok`.`VISUALIZACAO` (`idPOST` ASC) VISIBLE;
+CREATE INDEX `fk_VISUALIZACAO_POST1_idx` ON `birdbook`.`VISUALIZACAO` (`idPOST` ASC) VISIBLE;
 
-CREATE INDEX `fk_VISUALIZACAO_USUARIO1_idx` ON `birdbok`.`VISUALIZACAO` (`username` ASC) VISIBLE;
+CREATE INDEX `fk_VISUALIZACAO_USUARIO1_idx` ON `birdbook`.`VISUALIZACAO` (`username` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
--- Table `birdbok`.`TAG_USUARIO_POST`
+-- Table `birdbook`.`TAG_USUARIO_POST`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbok`.`TAG_USUARIO_POST` ;
+DROP TABLE IF EXISTS `birdbook`.`TAG_USUARIO_POST` ;
 
-CREATE TABLE IF NOT EXISTS `birdbok`.`TAG_USUARIO_POST` (
+CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_USUARIO_POST` (
   `username` VARCHAR(45) NOT NULL COMMENT 'usernema do usuário ao qual o post pertence',
   `idPOST` INT NOT NULL COMMENT 'is do post que pertence ao usuário',
   PRIMARY KEY (`username`, `idPOST`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_TAG_USUARIO_USUARIO1_idx` ON `birdbok`.`TAG_USUARIO_POST` (`username` ASC) VISIBLE;
+CREATE INDEX `fk_TAG_USUARIO_USUARIO1_idx` ON `birdbook`.`TAG_USUARIO_POST` (`username` ASC) VISIBLE;
 
-CREATE INDEX `fk_TAG_USUARIO_POST1_idx` ON `birdbok`.`TAG_USUARIO_POST` (`idPOST` ASC) VISIBLE;
+CREATE INDEX `fk_TAG_USUARIO_POST1_idx` ON `birdbook`.`TAG_USUARIO_POST` (`idPOST` ASC) VISIBLE;
 
-USE `birdbok`;
+USE `birdbook`;
 
 DELIMITER $$
 
-USE `birdbok`$$
-DROP TRIGGER IF EXISTS `birdbok`.`USUARIO_AFTER_DELETE` $$
-USE `birdbok`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `birdbok`.`USUARIO_AFTER_DELETE` AFTER DELETE ON `USUARIO` FOR EACH ROW
+USE `birdbook`$$
+DROP TRIGGER IF EXISTS `birdbook`.`USUARIO_AFTER_DELETE` $$
+USE `birdbook`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`USUARIO_AFTER_DELETE` AFTER DELETE ON `USUARIO` FOR EACH ROW
 BEGIN
 	DELETE FROM USUARIO_PREFERE_PASSARO
         WHERE username = OLD.username;
 END$$
 
 
-USE `birdbok`$$
-DROP TRIGGER IF EXISTS `birdbok`.`USUARIO_AFTER_DELETE_POST` $$
-USE `birdbok`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `birdbok`.`USUARIO_AFTER_DELETE_POST` AFTER DELETE ON `USUARIO` FOR EACH ROW
+USE `birdbook`$$
+DROP TRIGGER IF EXISTS `birdbook`.`USUARIO_AFTER_DELETE_POST` $$
+USE `birdbook`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`USUARIO_AFTER_DELETE_POST` AFTER DELETE ON `USUARIO` FOR EACH ROW
 BEGIN
 	UPDATE POST
 		SET deleta = '1' 
@@ -175,20 +175,20 @@ BEGIN
 END$$
 
 
-USE `birdbok`$$
-DROP TRIGGER IF EXISTS `birdbok`.`PASSARO_AFTER_DELETE` $$
-USE `birdbok`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `birdbok`.`PASSARO_AFTER_DELETE` AFTER DELETE ON `PASSARO` FOR EACH ROW
+USE `birdbook`$$
+DROP TRIGGER IF EXISTS `birdbook`.`PASSARO_AFTER_DELETE` $$
+USE `birdbook`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`PASSARO_AFTER_DELETE` AFTER DELETE ON `PASSARO` FOR EACH ROW
 BEGIN
 	DELETE FROM USUARIO_PREFERE_PASSARO
         WHERE tag_PASSARO = OLD.tag_PASSARO;
 END$$
 
 
-USE `birdbok`$$
-DROP TRIGGER IF EXISTS `birdbok`.`POST_AFTER_UPDATE` $$
-USE `birdbok`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `birdbok`.`POST_AFTER_UPDATE` AFTER UPDATE ON `POST` FOR EACH ROW
+USE `birdbook`$$
+DROP TRIGGER IF EXISTS `birdbook`.`POST_AFTER_UPDATE` $$
+USE `birdbook`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`POST_AFTER_UPDATE` AFTER UPDATE ON `POST` FOR EACH ROW
 BEGIN
 	IF NEW.deleta = TRUE THEN
 		DELETE FROM TAG_PASSARO_POST
@@ -201,10 +201,10 @@ BEGIN
 END$$
 
 
-USE `birdbok`$$
-DROP TRIGGER IF EXISTS `birdbok`.`VISUALIZACAO_AFTER_DELETE` $$
-USE `birdbok`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `birdbok`.`VISUALIZACAO_AFTER_DELETE` AFTER DELETE ON `VISUALIZACAO` FOR EACH ROW
+USE `birdbook`$$
+DROP TRIGGER IF EXISTS `birdbook`.`VISUALIZACAO_AFTER_DELETE` $$
+USE `birdbook`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`VISUALIZACAO_AFTER_DELETE` AFTER DELETE ON `VISUALIZACAO` FOR EACH ROW
 BEGIN
     DELETE FROM ACESSO 
         WHERE idACESSO = OLD.idACESSO;
