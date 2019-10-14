@@ -85,11 +85,11 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`POST` (
   `texto` VARCHAR(255) NULL COMMENT 'id do texto',
   `URL_foto` VARCHAR(100) NULL COMMENT 'url da foto que pode estar relacionada ao post',
   `deleta` TINYINT NOT NULL DEFAULT 0 COMMENT 'define se o post foi ou não deletado, ou seja, se ele será ou não mostrado na rede social',
-  `USUARIO_username` VARCHAR(45) NOT NULL,
+  `username` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idPOST`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_POST_USUARIO1_idx` ON `birdbook`.`POST` (`USUARIO_username` ASC) VISIBLE;
+CREATE INDEX `fk_POST_USUARIO1_idx` ON `birdbook`.`POST` (`username` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`VISUALIZACAO` (
   `idACESSO` INT NOT NULL COMMENT 'id do acesso em que a visualização ocorreu',
   `idPOST` INT NOT NULL COMMENT 'id do post que foi visualizado',
   `username` VARCHAR(45) NOT NULL COMMENT 'usuário que executou a visualização',
-  `stamp` TIMESTAMP(11) NOT NULL COMMENT 'momento em que a visualização aconteceu',
+  `stamp` TIMESTAMP(6) NOT NULL COMMENT 'momento em que a visualização aconteceu',
   PRIMARY KEY (`idACESSO`, `idPOST`, `stamp`))
 ENGINE = InnoDB;
 
