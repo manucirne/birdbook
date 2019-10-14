@@ -34,7 +34,7 @@ class Cidade():
     def lista(self):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('SELECT * FROM CIDADE')
+                cursor.execute('SELECT idCIDADE, cidade, estado FROM CIDADE')
 
                 res = cursor.fetchall()
                 if res:
