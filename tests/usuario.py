@@ -91,7 +91,7 @@ class Usuario():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'DELETE USUARIO_PREFERE_PASSARO WHERE username = %s AND tag_PASSARO=%s ', (username, passaro))
+                    'DELETE USUARIO_PREFERE_PASSARO WHERE username = %s AND tag_PASSARO=%s;', (username, passaro))
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso deletar preferência do usuário: {username} na tabela USUARIO_PREFERE_PASSARO')
@@ -100,7 +100,7 @@ class Usuario():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'SELECT username, tagPASSARO FROM USUARIO_PREFERE_PASSARO WHERE userName=%s)', (username))
+                    'SELECT username, tag_PASSARO FROM USUARIO_PREFERE_PASSARO WHERE userName=%s;', (username))
                 res = cursor.fetchall()
                 if res:
                     return res
