@@ -179,6 +179,16 @@ BEGIN
         WHERE idACESSO = OLD.idACESSO;
 END$$
 
+USE `birdbook`$$
+DROP TRIGGER IF EXISTS `birdbook`.`USUARIO_AFTER_DELETE` $$
+USE `birdbook`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`USUARIO_AFTER_DELETE` AFTER DELETE ON `USUARIO` FOR EACH ROW
+BEGIN
+    UPDATE POST
+		SET deleta = '1' 
+        WHERE username = OLD.username;
+END$$
+
 
 DELIMITER ;
 
