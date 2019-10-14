@@ -240,6 +240,30 @@ class TestProjeto(unittest.TestCase):
         res = user.lista()
         self.assertFalse(res)
 
+    @unittest.skip('Em desenvolvimento.')
+    def test_usuario_prefe_passaro(self):
+        conn = self.__class__.connection
+        pas = Passaro(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+        oldPas = ('Bentivinus Bolotoide',  'Bem-te-vi', 'Passarinho')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        user.adiciona(*oldUser)
+        res = user.lista_pref(oldUser[0])
+        self.assertSequenceEqual(res, (oldUser,))
+
+        res = user.lista()
+        self.assertFalse(res)
+
+    @unittest.skip('Em desenvolvimento.')
+    def test_usuario_remove_preferencia_passaro(self):
+        pass
+
 
 def run_sql_script(filename):
     global config
