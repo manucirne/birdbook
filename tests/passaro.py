@@ -23,11 +23,10 @@ class Passaro():
                 if res:
                     return res
 
-                else:
-                    return None
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso encontrar {tag} na tabela passaro')
+            return None
 
     def acha_especie(self, especie):
         with self.conn.cursor() as cursor:
@@ -67,11 +66,11 @@ class Passaro():
                 res = cursor.fetchall()
                 if res:
                     return res
-                else:
-                    return None
+
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso listar a tabela passaro')
+            return None
 
     def atualiza(self, tag, especie, nome_pop):
         with self.conn.cursor() as cursor:

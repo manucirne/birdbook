@@ -18,7 +18,7 @@ class Usuario():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'SELECT nome, idCIDADE, email FROM USUARIO WHERE username = (%s)', (username))
+                    'SELECT * FROM USUARIO WHERE username =%s', (username))
 
                 res = cursor.fetchone()
                 if res:
@@ -28,12 +28,18 @@ class Usuario():
                     f'Usuário com username = {username} não encontrado na tabela usuário')
             return None
 
-    def lista_usuarios(self):
+    def lista(self):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute('SELECT * FROM USUARIO')
+
+                res = cursor.fetchall()
+                if res:
+                    return res
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Usuários não podem ser mostrados')
+
+            return None
 
     def muda_nome(self, username, novo_nome):
         with self.conn.cursor() as cursor:

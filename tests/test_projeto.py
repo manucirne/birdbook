@@ -127,9 +127,15 @@ class TestProjeto(unittest.TestCase):
         self.assertFalse(res)
 
     def test_adiciona_usuario(self):
-        oldUser = ('PPPP', "P@P.com",  "popopo", 'sao paulo')
+
         conn = self.__class__.connection
+        cid = Cidade(conn)
         user = Usuario(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
 
         user.adiciona(*oldUser)
 
@@ -149,67 +155,89 @@ class TestProjeto(unittest.TestCase):
         self.assertIsNone(id)
 
     def test_remove_usuario(self):
-        oldPas = ('Bentivinus Bolotoide',  'Bem-te-vi', 'Passarinho')
+
         conn = self.__class__.connection
-        pas = Passaro(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
 
-        pas.adiciona(*oldPas)
+        # Pega todas as cidades
+        cids = cid.lista()
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
 
-        id = pas.acha(oldPas[0])
+        user.adiciona(*oldUser)
 
-        res = pas.lista()
+        id = user.acha(oldUser[0])
+        self.assertIsNotNone(id)
+
+        # Tenta achar um perigo inexistente.
+        res = user.lista()
         self.assertCountEqual(res, (id,))
 
-        pas.remove(oldPas[0])
+        user.remove(oldUser[0])
 
-        res = pas.lista()
+        res = user.lista()
         self.assertFalse(res)
 
     def test_update_usuario(self):
-        newPas = ('Bentivinus Bolotoide',  'Bem-não-te-viu', 'Passarinho')
-        oldPas = ('Bentivinus Bolotoide',  'Bem-te-vi', 'Passarinho')
+
         conn = self.__class__.connection
-        pas = Passaro(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
 
-        pas.adiciona(*oldPas)
-        pas.atualiza(*newPas)
-        res = pas.lista()
+        # Pega todas as cidades
+        cids = cid.lista()
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+        newUser = ('david', "david@passaros.com",
+                   "David Pasaro", cids[0][0])
 
-        self.assertSequenceEqual(res, (newPas,))
+        user.adiciona(*oldUser)
+        user.muda_email(newUser[0], newUser[1])
+        user.muda_nome(newUser[0], newUser[2])
+        user.muda_cidade(newUser[0], newUser[3])
+        res = user.lista()
 
-        pas.remove('Bentivinus Bolotoide')
+        self.assertSequenceEqual(res, (newUser,))
 
-        res = pas.lista()
+        user.remove(newUser[0])
+
+        res = user.lista()
         self.assertFalse(res)
 
     # @unittest.skip('Em desenvolvimento.')
     def test_lista_usuarios(self):
         conn = self.__class__.connection
-        pas = Passaro(conn)
-        allPas = [
-            ('Bentivinus Bolotoide',  'Bem-não-te-viu', 'Passarinho'),
-            ('Quero Queroides',  'QueroQuerQuero', 'Monstrinho')
-        ]
+        cid = Cidade(conn)
+        user = Usuario(conn)
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        allUsers = [('david', "david@passaros.com",
+                     "David Fogelman", cids[0][0]),
+                    ('david alias', "david@passaritos.com",
+                     "David Pasaro", cids[0][0])
+                    ]
         # Verifica que ainda não tem pássaros no sistema.
-        res = pas.lista()
+        res = user.lista()
         self.assertFalse(res)
 
         # Adiciona alguns perigos.
-        passaros_id = []
-        for p in allPas:
-            pas.adiciona(*p)
-            passaros_id.append(pas.acha(p[0]))
+        users_id = []
+        for u in allUsers:
+            user.adiciona(*u)
+            users_id.append(user.acha(u[0]))
 
         # Verifica se os perigos foram adicionados corretamente.
-        res = pas.lista()
-        self.assertCountEqual(res, passaros_id)
+        res = user.lista()
+        self.assertCountEqual(res, (users_id))
 
         # Remove os perigos.
-        for p in passaros_id:
-            pas.remove(p[0])
+        for u in users_id:
+            user.remove(u[0])
 
         # Verifica que todos os perigos foram removidos.
-        res = pas.lista()
+        res = user.lista()
         self.assertFalse(res)
 
 
