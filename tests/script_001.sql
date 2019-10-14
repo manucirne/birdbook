@@ -41,10 +41,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO` (
   `email` VARCHAR(45) NOT NULL COMMENT 'Email do usuário',
   `nome` VARCHAR(45) NOT NULL COMMENT 'Nome do usuário',
   `idCIDADE` INT NOT NULL COMMENT 'Cidade em que o usuário mora',
-  PRIMARY KEY (`username`, `idCIDADE`))
+  PRIMARY KEY (`username`))
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_USUARIO_CIDADE1_idx` ON `birdbook`.`USUARIO` (`idCIDADE` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -70,8 +68,6 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` (
   `tag_PASSARO` VARCHAR(20) NOT NULL COMMENT 'tag do pássaro que é preferido pelo usuário',
   PRIMARY KEY (`username`, `tag_PASSARO`))
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_USUARIO_PREFERE_PASSARO_PASSARO1_idx` ON `birdbook`.`USUARIO_PREFERE_PASSARO` (`tag_PASSARO` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -99,8 +95,6 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_PASSARO_POST` (
   `idPOST` INT NOT NULL COMMENT 'id do post que menciona o pássaro',
   PRIMARY KEY (`tag_PASSARO`, `idPOST`))
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_TAG_PASSARO_POST1_idx` ON `birdbook`.`TAG_PASSARO_POST` (`idPOST` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -130,10 +124,6 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`VISUALIZACAO` (
   PRIMARY KEY (`idACESSO`, `idPOST`, `stamp`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_VISUALIZACAO_POST1_idx` ON `birdbook`.`VISUALIZACAO` (`idPOST` ASC) VISIBLE;
-
-CREATE INDEX `fk_VISUALIZACAO_USUARIO1_idx` ON `birdbook`.`VISUALIZACAO` (`username` ASC) VISIBLE;
-
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`TAG_USUARIO_POST`
@@ -146,13 +136,40 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_USUARIO_POST` (
   PRIMARY KEY (`username`, `idPOST`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_TAG_USUARIO_USUARIO1_idx` ON `birdbook`.`TAG_USUARIO_POST` (`username` ASC) VISIBLE;
-
-CREATE INDEX `fk_TAG_USUARIO_POST1_idx` ON `birdbook`.`TAG_USUARIO_POST` (`idPOST` ASC) VISIBLE;
-
 USE `birdbook`;
 
 DELIMITER $$
+
+USE `birdbook`$$
+DROP TRIGGER IF EXISTS `birdbook`.`USUARIO_AFTER_DELETE` $$
+USE `birdbook`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`USUARIO_AFTER_DELETE` AFTER DELETE ON `USUARIO` FOR EACH ROW
+BEGIN
+	DELETE FROM USUARIO_PREFERE_PASSARO
+        WHERE username = OLD.username;
+END$$
+
+
+USE `birdbook`$$
+DROP TRIGGER IF EXISTS `birdbook`.`USUARIO_AFTER_DELETE_POST` $$
+USE `birdbook`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`USUARIO_AFTER_DELETE_POST` AFTER DELETE ON `USUARIO` FOR EACH ROW
+BEGIN
+	UPDATE POST
+		SET deleta = '1' 
+        WHERE username = OLD.username;
+END$$
+
+
+USE `birdbook`$$
+DROP TRIGGER IF EXISTS `birdbook`.`PASSARO_AFTER_DELETE` $$
+USE `birdbook`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`PASSARO_AFTER_DELETE` AFTER DELETE ON `PASSARO` FOR EACH ROW
+BEGIN
+	DELETE FROM USUARIO_PREFERE_PASSARO
+        WHERE tag_PASSARO = OLD.tag_PASSARO;
+END$$
+
 
 USE `birdbook`$$
 DROP TRIGGER IF EXISTS `birdbook`.`POST_AFTER_UPDATE` $$
