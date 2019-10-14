@@ -44,6 +44,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO` (
   PRIMARY KEY (`username`))
 ENGINE = InnoDB;
 
+CREATE INDEX `fk_USUARIO_CIDADE1_idx` ON `birdbook`.`USUARIO` (`idCIDADE` ASC) VISIBLE;
+
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`PASSARO`
@@ -69,6 +71,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` (
   PRIMARY KEY (`username`, `tag_PASSARO`))
 ENGINE = InnoDB;
 
+CREATE INDEX `fk_USUARIO_PREFERE_PASSARO_PASSARO1_idx` ON `birdbook`.`USUARIO_PREFERE_PASSARO` (`tag_PASSARO` ASC) VISIBLE;
+
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`POST`
@@ -81,8 +85,11 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`POST` (
   `texto` VARCHAR(255) NULL COMMENT 'id do texto',
   `URL_foto` VARCHAR(100) NULL COMMENT 'url da foto que pode estar relacionada ao post',
   `deleta` TINYINT NOT NULL COMMENT 'define se o post foi ou não deletado, ou seja, se ele será ou não mostrado na rede social',
+  `USUARIO_username` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idPOST`))
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_POST_USUARIO1_idx` ON `birdbook`.`POST` (`USUARIO_username` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -95,6 +102,8 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_PASSARO_POST` (
   `idPOST` INT NOT NULL COMMENT 'id do post que menciona o pássaro',
   PRIMARY KEY (`tag_PASSARO`, `idPOST`))
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_TAG_PASSARO_POST1_idx` ON `birdbook`.`TAG_PASSARO_POST` (`idPOST` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -120,9 +129,13 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`VISUALIZACAO` (
   `idACESSO` INT NOT NULL COMMENT 'id do acesso em que a visualização ocorreu',
   `idPOST` INT NOT NULL COMMENT 'id do post que foi visualizado',
   `username` VARCHAR(45) NOT NULL COMMENT 'usuário que executou a visualização',
-  `stamp` TIMESTAMP(6) NOT NULL COMMENT 'momento em que a visualização aconteceu',
+  `stamp` TIMESTAMP(11) NOT NULL COMMENT 'momento em que a visualização aconteceu',
   PRIMARY KEY (`idACESSO`, `idPOST`, `stamp`))
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_VISUALIZACAO_POST1_idx` ON `birdbook`.`VISUALIZACAO` (`idPOST` ASC) VISIBLE;
+
+CREATE INDEX `fk_VISUALIZACAO_USUARIO1_idx` ON `birdbook`.`VISUALIZACAO` (`username` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -135,6 +148,10 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_USUARIO_POST` (
   `idPOST` INT NOT NULL COMMENT 'is do post que pertence ao usuário',
   PRIMARY KEY (`username`, `idPOST`))
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_TAG_USUARIO_USUARIO1_idx` ON `birdbook`.`TAG_USUARIO_POST` (`username` ASC) VISIBLE;
+
+CREATE INDEX `fk_TAG_USUARIO_POST1_idx` ON `birdbook`.`TAG_USUARIO_POST` (`idPOST` ASC) VISIBLE;
 
 USE `birdbook`;
 
@@ -167,7 +184,7 @@ USE `birdbook`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`PASSARO_AFTER_DELETE` AFTER DELETE ON `PASSARO` FOR EACH ROW
 BEGIN
 	DELETE FROM USUARIO_PREFERE_PASSARO
-        WHERE tag_PASSARO = OLD.tag_PASSARO;
+        WHERE USUARIO_PREFERE_PASSARO.tag_PASSARO = OLD.tag_PASSARO;
 END$$
 
 
@@ -178,11 +195,11 @@ CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`POST_AFTER_UPDATE` AFTER UPDAT
 BEGIN
 	IF NEW.deleta = TRUE THEN
 		DELETE FROM TAG_PASSARO_POST
-			WHERE idPOST = NEW.idPOST;
+			WHERE TAG_PASSARO_POST.idPOST = NEW.idPOST;
 		DELETE FROM TAG_USUARIO_POST 
-			WHERE idPOST = NEW.idPOST;
+			WHERE TAG_USUARIO_POST.idPOST = NEW.idPOST;
 		DELETE FROM VISUALIZACAO 
-			WHERE idPOST = NEW.idPOST;
+			WHERE VISUALIZACAO.idPOST = NEW.idPOST;
 	END IF;
 END$$
 
@@ -193,7 +210,7 @@ USE `birdbook`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`VISUALIZACAO_AFTER_DELETE` AFTER DELETE ON `VISUALIZACAO` FOR EACH ROW
 BEGIN
     DELETE FROM ACESSO 
-        WHERE idACESSO = OLD.idACESSO;
+        WHERE ACESSO.idACESSO = OLD.idACESSO;
 END$$
 
 
