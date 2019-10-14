@@ -174,6 +174,41 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_USUARIO_POST` (
     FOREIGN KEY (`idPOST`)
     REFERENCES `birdbook`.`POST` (`idPOST`));
 
+
+    -- -----------------------------------------------------
+-- Trigger `deletaAcesso`
+-- -----------------------------------------------------
+DROP TRIGGER IF EXISTS deletaAcesso;
+CREATE TRIGGER deletaAcesso 
+AFTER DELETE ON VISUALIZACAO
+FOR EACH ROW
+BEGIN
+    DELETE FROM ACESSO 
+        WHERE idACESSO = OLD.idACESSO;
+END//
+-- -----------------------------------------------------
+-- Trigger `deletaTags`
+-- -----------------------------------------------------
+DROP TRIGGER IF EXISTS `deletaTags`;
+
+DELIMITER //
+CREATE TRIGGER deletaTags 
+AFTER UPDATE ON POST
+FOR EACH ROW
+BEGIN
+	IF NEW.deleta = TRUE THEN
+		DELETE FROM TAG_PASSARO_POST
+			WHERE idPOST = NEW.idPOST;
+		DELETE FROM TAG_USUARIO_POST 
+			WHERE idPOST = NEW.idPOST;
+		DELETE FROM VISUALIZACAO 
+			WHERE idPOST = NEW.idPOST;
+	END IF;
+END;
+
+
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

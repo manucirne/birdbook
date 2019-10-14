@@ -1,75 +1,56 @@
 -- MySQL Workbench Forward Engineering
-SET
-  @OLD_UNIQUE_CHECKS = @ @UNIQUE_CHECKS,
-  UNIQUE_CHECKS = 0;
 
-SET
-  @OLD_FOREIGN_KEY_CHECKS = @ @FOREIGN_KEY_CHECKS,
-  FOREIGN_KEY_CHECKS = 0;
-
-SET
-  @OLD_SQL_MODE = @ @SQL_MODE,
-  SQL_MODE = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
 -- Schema birdbook
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `birdbook`;
+DROP SCHEMA IF EXISTS `birdbook` ;
 
 -- -----------------------------------------------------
 -- Schema birdbook
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `birdbook` DEFAULT CHARACTER SET utf8;
+CREATE SCHEMA IF NOT EXISTS `birdbook` DEFAULT CHARACTER SET utf8 ;
+-- -----------------------------------------------------
+-- Schema birdbook
+-- -----------------------------------------------------
+USE `birdbook` ;-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
 -- Schema birdbook
 -- -----------------------------------------------------
-USE `birdbook`;
-
--- MySQL Workbench Forward Engineering
-SET
-  @OLD_UNIQUE_CHECKS = @ @UNIQUE_CHECKS,
-  UNIQUE_CHECKS = 0;
-
-SET
-  @OLD_FOREIGN_KEY_CHECKS = @ @FOREIGN_KEY_CHECKS,
-  FOREIGN_KEY_CHECKS = 0;
-
-SET
-  @OLD_SQL_MODE = @ @SQL_MODE,
-  SQL_MODE = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+DROP SCHEMA IF EXISTS `birdbook` ;
 
 -- -----------------------------------------------------
 -- Schema birdbook
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `birdbook`;
-
+CREATE SCHEMA IF NOT EXISTS `birdbook` DEFAULT CHARACTER SET utf8 ;
 -- -----------------------------------------------------
 -- Schema birdbook
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `birdbook` DEFAULT CHARACTER SET utf8;
-
--- -----------------------------------------------------
--- Schema birdbook
--- -----------------------------------------------------
-USE `birdbook`;
+USE `birdbook` ;
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`CIDADE`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbook`.`CIDADE`;
+DROP TABLE IF EXISTS `birdbook`.`CIDADE` ;
 
 CREATE TABLE IF NOT EXISTS `birdbook`.`CIDADE` (
   `idCIDADE` INT NOT NULL AUTO_INCREMENT,
   `cidade` VARCHAR(45) NOT NULL,
   `estado` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idCIDADE`)
-);
+  PRIMARY KEY (`idCIDADE`));
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`USUARIO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbook`.`USUARIO`;
+DROP TABLE IF EXISTS `birdbook`.`USUARIO` ;
 
 CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO` (
   `username` VARCHAR(45) NOT NULL,
@@ -77,38 +58,44 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO` (
   `nome` VARCHAR(45) NOT NULL,
   `idCIDADE` INT NOT NULL,
   PRIMARY KEY (`username`),
-  CONSTRAINT `fk_USUARIO_ENDERECO1` FOREIGN KEY (`idCidade`) REFERENCES `birdbook`.`CIDADE` (`idCIDADE`)
-);
+  CONSTRAINT `fk_USUARIO_ENDERECO1`
+    FOREIGN KEY (`idCidade`)
+    REFERENCES `birdbook`.`CIDADE` (`idCIDADE`));
+
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`PASSARO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbook`.`PASSARO`;
+DROP TABLE IF EXISTS `birdbook`.`PASSARO` ;
 
 CREATE TABLE IF NOT EXISTS `birdbook`.`PASSARO` (
   `tag_PASSARO` VARCHAR(20) NOT NULL,
   `especie` VARCHAR(45) NULL,
   `nome_popular` VARCHAR(45) NULL,
-  PRIMARY KEY (`tag_PASSARO`)
-);
+  PRIMARY KEY (`tag_PASSARO`));
+
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`USUARIO_PREFERE_PASSARO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO`;
+DROP TABLE IF EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` ;
 
 CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO_PREFERE_PASSARO` (
   `username` VARCHAR(45) NOT NULL,
   `tag_PASSARO` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`username`, `tag_PASSARO`),
-  CONSTRAINT `fk_USUARIO_PREFERE_PASSARO_USUARIO1` FOREIGN KEY (`username`) REFERENCES `birdbook`.`USUARIO` (`username`),
-  CONSTRAINT `fk_USUARIO_PREFERE_PASSARO_PASSARO1` FOREIGN KEY (`tag_PASSARO`) REFERENCES `birdbook`.`PASSARO` (`tag_PASSARO`)
-);
+  CONSTRAINT `fk_USUARIO_PREFERE_PASSARO_USUARIO1`
+    FOREIGN KEY (`username`)
+    REFERENCES `birdbook`.`USUARIO` (`username`),
+  CONSTRAINT `fk_USUARIO_PREFERE_PASSARO_PASSARO1`
+    FOREIGN KEY (`tag_PASSARO`)
+    REFERENCES `birdbook`.`PASSARO` (`tag_PASSARO`));
+
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`POST`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbook`.`POST`;
+DROP TABLE IF EXISTS `birdbook`.`POST` ;
 
 CREATE TABLE IF NOT EXISTS `birdbook`.`POST` (
   `idPOST` INT NOT NULL AUTO_INCREMENT,
@@ -116,39 +103,43 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`POST` (
   `texto` VARCHAR(255) NULL,
   `URL_foto` VARCHAR(100) NULL,
   `deleta` TINYINT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`idPOST`)
-);
+  PRIMARY KEY (`idPOST`));
+
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`TAG_PASSARO_POST`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbook`.`TAG_PASSARO_POST`;
+DROP TABLE IF EXISTS `birdbook`.`TAG_PASSARO_POST` ;
 
 CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_PASSARO_POST` (
   `tag_PASSARO` VARCHAR(20) NOT NULL,
   `idPOST` INT NOT NULL,
   PRIMARY KEY (`tag_PASSARO`, `idPOST`),
-  CONSTRAINT `fk_TAG_PASSARO_PASSARO1` FOREIGN KEY (`tag_PASSARO`) REFERENCES `birdbook`.`PASSARO` (`tag_PASSARO`),
-  CONSTRAINT `fk_TAG_PASSARO_POST1` FOREIGN KEY (`idPOST`) REFERENCES `birdbook`.`POST` (`idPOST`)
-);
+  CONSTRAINT `fk_TAG_PASSARO_PASSARO1`
+    FOREIGN KEY (`tag_PASSARO`)
+    REFERENCES `birdbook`.`PASSARO` (`tag_PASSARO`),
+  CONSTRAINT `fk_TAG_PASSARO_POST1`
+    FOREIGN KEY (`idPOST`)
+    REFERENCES `birdbook`.`POST` (`idPOST`));
+
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`ACESSO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbook`.`ACESSO`;
+DROP TABLE IF EXISTS `birdbook`.`ACESSO` ;
 
 CREATE TABLE IF NOT EXISTS `birdbook`.`ACESSO` (
   `idACESSO` INT NOT NULL AUTO_INCREMENT,
   `IP` VARCHAR(45) NULL,
   `Browser` VARCHAR(45) NULL,
   `Aparelho` VARCHAR(45) NULL,
-  PRIMARY KEY (`idACESSO`)
-);
+  PRIMARY KEY (`idACESSO`));
+
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`VISUALIZACAO`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbook`.`VISUALIZACAO`;
+DROP TABLE IF EXISTS `birdbook`.`VISUALIZACAO` ;
 
 CREATE TABLE IF NOT EXISTS `birdbook`.`VISUALIZACAO` (
   `idACESSO` INT NOT NULL,
@@ -156,70 +147,68 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`VISUALIZACAO` (
   `username` VARCHAR(45) NOT NULL,
   `stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idACESSO`, `idPOST`, `stamp`),
-  CONSTRAINT `fk_VISUALIZACAO_ACESSO1` FOREIGN KEY (`idACESSO`) REFERENCES `birdbook`.`ACESSO` (`idACESSO`),
-  CONSTRAINT `fk_VISUALIZACAO_POST1` FOREIGN KEY (`idPOST`) REFERENCES `birdbook`.`POST` (`idPOST`),
-  CONSTRAINT `fk_VISUALIZACAO_USUARIO1` FOREIGN KEY (`username`) REFERENCES `birdbook`.`USUARIO` (`username`)
-);
+  CONSTRAINT `fk_VISUALIZACAO_ACESSO1`
+    FOREIGN KEY (`idACESSO`)
+    REFERENCES `birdbook`.`ACESSO` (`idACESSO`),
+  CONSTRAINT `fk_VISUALIZACAO_POST1`
+    FOREIGN KEY (`idPOST`)
+    REFERENCES `birdbook`.`POST` (`idPOST`),
+  CONSTRAINT `fk_VISUALIZACAO_USUARIO1`
+    FOREIGN KEY (`username`)
+    REFERENCES `birdbook`.`USUARIO` (`username`));
+
 
 -- -----------------------------------------------------
 -- Table `birdbook`.`TAG_USUARIO_POST`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `birdbook`.`TAG_USUARIO_POST`;
+DROP TABLE IF EXISTS `birdbook`.`TAG_USUARIO_POST` ;
 
 CREATE TABLE IF NOT EXISTS `birdbook`.`TAG_USUARIO_POST` (
   `username` VARCHAR(45) NOT NULL,
   `idPOST` INT NOT NULL,
   PRIMARY KEY (`username`, `idPOST`),
-  CONSTRAINT `fk_TAG_USUARIO_USUARIO1` FOREIGN KEY (`username`) REFERENCES `birdbook`.`USUARIO` (`username`),
-  CONSTRAINT `fk_TAG_USUARIO_POST1` FOREIGN KEY (`idPOST`) REFERENCES `birdbook`.`POST` (`idPOST`)
-);
+  CONSTRAINT `fk_TAG_USUARIO_USUARIO1`
+    FOREIGN KEY (`username`)
+    REFERENCES `birdbook`.`USUARIO` (`username`),
+  CONSTRAINT `fk_TAG_USUARIO_POST1`
+    FOREIGN KEY (`idPOST`)
+    REFERENCES `birdbook`.`POST` (`idPOST`));
 
--- -----------------------------------------------------
+
+    -- -----------------------------------------------------
 -- Trigger `deletaAcesso`
 -- -----------------------------------------------------
 DROP TRIGGER IF EXISTS deletaAcesso;
-
-CREATE TRIGGER deletaAcesso
-AFTER
-  DELETE ON VISUALIZACAO FOR EACH ROW BEGIN
-DELETE FROM
-  ACESSO
-WHERE
-  idACESSO = OLD.idACESSO;
-
-END / / -- -----------------------------------------------------
+CREATE TRIGGER deletaAcesso 
+AFTER DELETE ON VISUALIZACAO
+FOR EACH ROW
+BEGIN
+    DELETE FROM ACESSO 
+        WHERE idACESSO = OLD.idACESSO;
+END//
+-- -----------------------------------------------------
 -- Trigger `deletaTags`
 -- -----------------------------------------------------
 DROP TRIGGER IF EXISTS `deletaTags`;
 
-DELIMITER / / CREATE TRIGGER deletaTags
-AFTER
-UPDATE
-  ON POST FOR EACH ROW BEGIN IF NEW.deleta = TRUE THEN
-DELETE FROM
-  TAG_PASSARO_POST
-WHERE
-  idPOST = NEW.idPOST;
-
-DELETE FROM
-  TAG_USUARIO_POST
-WHERE
-  idPOST = NEW.idPOST;
-
-DELETE FROM
-  VISUALIZACAO
-WHERE
-  idPOST = NEW.idPOST;
-
-END IF;
-
+DELIMITER //
+CREATE TRIGGER deletaTags 
+AFTER UPDATE ON POST
+FOR EACH ROW
+BEGIN
+	IF NEW.deleta = TRUE THEN
+		DELETE FROM TAG_PASSARO_POST
+			WHERE idPOST = NEW.idPOST;
+		DELETE FROM TAG_USUARIO_POST 
+			WHERE idPOST = NEW.idPOST;
+		DELETE FROM VISUALIZACAO 
+			WHERE idPOST = NEW.idPOST;
+	END IF;
 END;
 
-SET
-  SQL_MODE = @OLD_SQL_MODE;
 
-SET
-  FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
 
-SET
-  UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
