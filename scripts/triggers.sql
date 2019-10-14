@@ -1,0 +1,38 @@
+USE `birdbook` ;-- MySQL Workbench Forward Engineering
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+DELIMITER //
+-- -----------------------------------------------------
+-- Trigger `deletaAcesso`
+-- -----------------------------------------------------
+DROP TRIGGER IF EXISTS deletaAcesso;
+CREATE TRIGGER deletaAcesso 
+AFTER DELETE ON VISUALIZACAO
+FOR EACH ROW
+BEGIN
+    DELETE FROM ACESSO 
+        WHERE idACESSO = OLD.idACESSO;
+-- -----------------------------------------------------
+-- Trigger `deletaTags`
+-- -----------------------------------------------------
+DROP TRIGGER IF EXISTS `deletaTags`;
+
+CREATE TRIGGER deletaTags 
+AFTER UPDATE ON POST
+FOR EACH ROW
+BEGIN
+	IF NEW.deleta = TRUE THEN
+		DELETE FROM TAG_PASSARO_POST
+			WHERE idPOST = NEW.idPOST;
+		DELETE FROM TAG_USUARIO_POST 
+			WHERE idPOST = NEW.idPOST;
+		DELETE FROM VISUALIZACAO 
+			WHERE idPOST = NEW.idPOST;
+	END IF;
+END;
+END//
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
