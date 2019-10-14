@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`POST` (
   `titulo` VARCHAR(45) NOT NULL COMMENT 'títilo do post',
   `texto` VARCHAR(255) NULL COMMENT 'id do texto',
   `URL_foto` VARCHAR(100) NULL COMMENT 'url da foto que pode estar relacionada ao post',
-  `deleta` TINYINT NOT NULL COMMENT 'define se o post foi ou não deletado, ou seja, se ele será ou não mostrado na rede social',
+  `deleta` TINYINT NOT NULL DEFAULT 0 COMMENT 'define se o post foi ou não deletado, ou seja, se ele será ou não mostrado na rede social',
   `USUARIO_username` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idPOST`))
 ENGINE = InnoDB;

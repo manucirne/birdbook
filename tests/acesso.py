@@ -5,34 +5,47 @@ class Acesso():
     def __init__(self, conn):
         self.conn = conn
 
-    def adiciona(self, tag, especie, nome_pop):
+    def adiciona(self, ip, browser, aparelho):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'INSERT INTO PASSARO (tag_PASSARO, especie, nome_popular) VALUES (%s,%s,%s);', (tag, especie, nome_pop))
-            except pymysql.err.IntegrityError as e:
-                raise ValueError(
-                    f'Não posso inserir {tag}, {especie}, {nome_pop} na tabela passaro')
+                    'INSERT INTO ACESSO (IP, Browser, Aparelho) VALUES (%s,%s,%s);', (ip, browser, aparelho))
 
-    def acha(self, tag):
-        with self.conn.cursor() as cursor:
-            try:
-                cursor.execute(
-                    'SELECT * FROM PASSARO WHERE tag_PASSARO=%s;', (tag))
-                res = cursor.fetchone()
+                res = cursor.execute('''
+                        SELECT LAST_INSERT_ID()
+                            FROM ACESSO;
+                        ''')
+
                 if res:
-                    return res
+                    return res.fetchone()[0]
+                else:
+                    return None
 
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
-                    f'Não posso encontrar {tag} na tabela passaro')
+                    f'Não posso inserir {ip}, {browser}, {aparelho} na tabela ACESSO')
+
             return None
 
-    def acha_especie(self, especie):
+    def acha(self, idACESSO):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'SELECT * FROM PASSARO WHERE especie=%s;', (especie))
+                    'SELECT * FROM ACESSO WHERE idACESSO=%s;', (idACESSO))
+                res = cursor.fetchone()
+                if res:
+                    return res
+
+            except pymysql.err.IntegrityError as e:
+                raise ValueError(
+                    f'Não posso encontrar {idACESSO} na tabela ACESSO')
+            return None
+
+    def acha_aparelho(self, aparelho):
+        with self.conn.cursor() as cursor:
+            try:
+                cursor.execute(
+                    'SELECT * FROM ACESSO WHERE aparelho=%s;', (aparelho))
                 res = cursor.fetchone()
                 if res:
                     return res
@@ -41,13 +54,13 @@ class Acesso():
                     return None
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
-                    f'Não posso encontrar {especie} na tabela passaro')
+                    f'Não posso encontrar {aparelho} na tabela ACESSO')
 
-    def acha_pop(self, nome_pop):
+    def acha_browser(self, browser):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'SELECT * FROM PASSARO WHERE nome_popular=%s;', (nome_pop))
+                    'SELECT * FROM ACESSO WHERE Browser=%s;', (browser))
                 res = cursor.fetchone()
                 if res:
                     return res
@@ -56,23 +69,38 @@ class Acesso():
                     return None
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
-                    f'Não posso encontrar {nome_pop} na tabela passaro')
+                    f'Não posso encontrar {browser} na tabela ACESSO')
+
+    def acha_IP(self, IP):
+        with self.conn.cursor() as cursor:
+            try:
+                cursor.execute(
+                    'SELECT * FROM ACESSO WHERE IP=%s;', (IP))
+                res = cursor.fetchone()
+                if res:
+                    return res
+
+                else:
+                    return None
+            except pymysql.err.IntegrityError as e:
+                raise ValueError(
+                    f'Não posso encontrar {IP} na tabela ACESSO')
 
     def lista(self):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'SELECT * FROM PASSARO;')
+                    'SELECT * FROM ACESSO;')
                 res = cursor.fetchall()
                 if res:
                     return res
 
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
-                    f'Não posso listar a tabela passaro')
+                    f'Não posso listar a tabela ACESSO')
             return None
 
-    def atualiza(self, tag, especie, nome_pop):
+    def atualiza(self, ip, browser, aparelho):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
