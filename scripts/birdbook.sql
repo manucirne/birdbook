@@ -146,7 +146,7 @@ USE `birdbook`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`USUARIO_AFTER_DELETE` AFTER DELETE ON `USUARIO` FOR EACH ROW
 BEGIN
 	DELETE FROM USUARIO_PREFERE_PASSARO
-        WHERE username = OLD.username;
+        WHERE USUARIO_PREFERE_PASSARO.username = OLD.username;
 END$$
 
 
@@ -157,7 +157,7 @@ CREATE DEFINER = CURRENT_USER TRIGGER `birdbook`.`USUARIO_AFTER_DELETE_POST` AFT
 BEGIN
 	UPDATE POST
 		SET deleta = '1' 
-        WHERE username = OLD.username;
+        WHERE POST.username = OLD.username;
 END$$
 
 
