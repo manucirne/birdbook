@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `birdbook`.`USUARIO` (
   `email` VARCHAR(45) NOT NULL COMMENT 'Email do usuário',
   `nome` VARCHAR(45) NOT NULL COMMENT 'Nome do usuário',
   `idCIDADE` INT NOT NULL COMMENT 'Cidade em que o usuário mora',
-  PRIMARY KEY (`username`, `idCIDADE`))
+  PRIMARY KEY (`username`))
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_USUARIO_CIDADE1_idx` ON `birdbook`.`USUARIO` (`idCIDADE` ASC) VISIBLE;
