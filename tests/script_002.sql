@@ -1,6 +1,6 @@
 USE `birdbook` ;
 
-INSERT INTO `CIDADE` (cidade)
-VALUES ('sao paulo'),
-       ('rio janeiro'),
-       ('rio branco');
+INSERT INTO `CIDADE` (cidade, estado)
+VALUES ('sao paulo', 'SP'),
+       ('rio janeiro', 'RJ'),
+       ('rio branco', 'AC');

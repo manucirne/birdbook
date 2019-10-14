@@ -126,6 +126,92 @@ class TestProjeto(unittest.TestCase):
         res = pas.lista()
         self.assertFalse(res)
 
+    def test_adiciona_usuario(self):
+        oldUser = ('PPPP', "P@P.com",  "popopo", 'sao paulo')
+        conn = self.__class__.connection
+        user = Usuario(conn)
+
+        user.adiciona(*oldUser)
+
+        # tenta adicionar duas vezes o passaro
+        try:
+            user.adiciona(*oldUser)
+            self.fail(
+                'Nao deveria ter adicionado o mesmo passaro duas vezes.')
+        except ValueError as e:
+            pass
+
+        id = user.acha(oldUser[0])
+        self.assertIsNotNone(id)
+
+        # Tenta achar um perigo inexistente.
+        id = user.acha('Usuarium NonExistum')
+        self.assertIsNone(id)
+
+    def test_remove_usuario(self):
+        oldPas = ('Bentivinus Bolotoide',  'Bem-te-vi', 'Passarinho')
+        conn = self.__class__.connection
+        pas = Passaro(conn)
+
+        pas.adiciona(*oldPas)
+
+        id = pas.acha(oldPas[0])
+
+        res = pas.lista()
+        self.assertCountEqual(res, (id,))
+
+        pas.remove(oldPas[0])
+
+        res = pas.lista()
+        self.assertFalse(res)
+
+    def test_update_usuario(self):
+        newPas = ('Bentivinus Bolotoide',  'Bem-não-te-viu', 'Passarinho')
+        oldPas = ('Bentivinus Bolotoide',  'Bem-te-vi', 'Passarinho')
+        conn = self.__class__.connection
+        pas = Passaro(conn)
+
+        pas.adiciona(*oldPas)
+        pas.atualiza(*newPas)
+        res = pas.lista()
+
+        self.assertSequenceEqual(res, (newPas,))
+
+        pas.remove('Bentivinus Bolotoide')
+
+        res = pas.lista()
+        self.assertFalse(res)
+
+    # @unittest.skip('Em desenvolvimento.')
+    def test_lista_usuarios(self):
+        conn = self.__class__.connection
+        pas = Passaro(conn)
+        allPas = [
+            ('Bentivinus Bolotoide',  'Bem-não-te-viu', 'Passarinho'),
+            ('Quero Queroides',  'QueroQuerQuero', 'Monstrinho')
+        ]
+        # Verifica que ainda não tem pássaros no sistema.
+        res = pas.lista()
+        self.assertFalse(res)
+
+        # Adiciona alguns perigos.
+        passaros_id = []
+        for p in allPas:
+            pas.adiciona(*p)
+            passaros_id.append(pas.acha(p[0]))
+
+        # Verifica se os perigos foram adicionados corretamente.
+        res = pas.lista()
+        self.assertCountEqual(res, passaros_id)
+
+        # Remove os perigos.
+        for p in passaros_id:
+            pas.remove(p[0])
+
+        # Verifica que todos os perigos foram removidos.
+        res = pas.lista()
+        self.assertFalse(res)
+
 
 def run_sql_script(filename):
     global config
