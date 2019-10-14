@@ -16,44 +16,39 @@ class Post():
                 lista_citados.append(item[1:])
         return {"#": lista_passaros, "@": lista_citados}
 
-    def adiciona(self, titulo, texto, URL_foto):
+    def adiciona(self, username, titulo, texto, URL_foto):
         with self.conn.cursor() as cursor:
-            idPOST = None
             try:
                 cursor.execute(
-                    'INSERT INTO POST (titulo, texto, URL_foto) VALUES (%s, %s, %s, %s);', (titulo, texto, URL_foto))
-                res = cursor.execute('''
-                        SELECT LAST_INSERT_ID()
-                            FROM POST;
-                    ''')
-
-                if res:
-                    return res.fetchone()[0]
-                else:
-                    return None
+                    'INSERT INTO POST (titulo, texto, URL_foto, USUARIO_username) VALUES ( %s,%s, %s, %s);', (titulo, texto, URL_foto, username))
 
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso inserir {titulo}, {texto} e {URL_foto} na tabela POST;')
 
-            return idPOST
-
     def acha_por_id(self, idPOST):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute(
-                    'SELECT titulo, texto, URL_foto FROM POST WHERE idPOST = (%s) AND deleta = False;', (idPOST))
+                res = cursor.execute(
+                    'SELECT idPOST, titulo, texto, URL_foto FROM POST WHERE idPOST = (%s) AND deleta = False;', (idPOST))
+
+                res = cursor.fetchone()
+                if res:
+                    return res
+
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Post não encontrado')
-            return cursor.fetchone()
+            return None
 
-    def lista_post(self):
+    def lista(self):
         with self.conn.cursor() as cursor:
             try:
                 res = cursor.execute(
-                    'SELECT * FROM POST WHERE deleta = False;')
+                    'SELECT idPOST, titulo, texto, URL_foto FROM POST WHERE deleta = False;')
+
+                res = cursor.fetchall()
                 if res:
-                    return res.fetchAll()
+                    return res
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Posts não podem ser mostrados')
             return None

@@ -1,1 +1,1 @@
-/* DROP DATABASE IF EXISTS birdbook; */
+DROP DATABASE IF EXISTS birdbook;

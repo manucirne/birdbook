@@ -301,6 +301,141 @@ class TestProjeto(unittest.TestCase):
         self.assertIsNotNone(res)
         self.assertSequenceEqual(res, (oldPref,))
 
+    def test_adiciona_post(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        pas = Passaro(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        user.adiciona(*oldUser)
+        res = user.acha(oldUser[0])
+        self.assertSequenceEqual(res, oldUser)
+
+        id = res[0]
+        pst.adiciona(id, *oldPst)
+
+        psts = pst.lista()
+        self.assertTrue(any(elem in psts[0] for elem in oldPst))
+
+        res = pst.acha_por_id(psts[0][0])
+        self.assertSequenceEqual(res, psts[0])
+
+        idPost = psts[0][0]
+
+        pst.remove(idPost)
+        res = pst.lista()
+        self.assertFalse(res)
+
+    def test_remove_post(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        user.adiciona(*oldUser)
+        res = user.acha(oldUser[0])
+
+        id = res[0]
+        pst.adiciona(id, *oldPst)
+
+        res = pst.lista()
+        idPost = res[0][0]
+
+        pst.remove(idPost)
+        res = pst.lista()
+        self.assertIsNone(res)
+
+    def test_update_post(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
+
+        newPst = ('Um novo passaro inédito',
+                  'Encontrei um pássaro inédito no meu cooper matinal', 'https://pterodactilo.com')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        user.adiciona(*oldUser)
+        res = user.acha(oldUser[0])
+
+        id = res[0]
+        pst.adiciona(id, *oldPst)
+
+        psts = pst.lista()
+        idPost = psts[0][0]
+
+        pst.muda_titulo(idPost, newPst[0])
+        pst.muda_texto(idPost, newPst[1])
+        pst.muda_foto(idPost, newPst[2])
+
+        res = pst.acha_por_id(idPost)
+
+        self.assertTrue(any(elem in res for elem in newPst))
+
+        res = pst.lista()
+
+        pst.remove(idPost)
+        res = pst.lista()
+        self.assertIsNone(res)
+
+    def test_lista_posts(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        psts = [('Um novo passaro',
+                 'Encontrei um passaro novo na minha caminhada', 'https://passarito.com'),
+                ('Um novo passaro inédito',
+                 'Encontrei um pássaro inédito no meu cooper matinal', 'https://pterodactilo.com')]
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        user.adiciona(*oldUser)
+        res = user.acha(oldUser[0])
+        id = res[0]
+        for p in psts:
+            pst.adiciona(id, *p)
+
+        res = pst.lista()
+        posts_id = [p[0] for p in res]
+
+        self.assertEqual(len(posts_id), len(psts))
+
+        for p in posts_id:
+            pst.remove(p)
+
+        # Verifica que todos os perigos foram removidos.
+        res = pst.lista()
+        self.assertFalse(res)
+
 
 def run_sql_script(filename):
     global config
