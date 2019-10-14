@@ -104,7 +104,7 @@ class Acesso():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'UPDATE PASSARO SET especie=%s, nome_popular=%s WHERE tag_PASSARO=%s;', (especie, nome_pop, tag))
+                    'UPDATE CESSO SET IP=%s, Browser=%s WHERE Aparelho=%s;', (ip, browser, aparelho))
                 res = cursor.fetchone()
                 if res:
                     return res[0]
@@ -112,12 +112,12 @@ class Acesso():
                     return None
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
-                    f'Não posso encontrar {tag} na tabela passaro')
+                    f'Não posso atualizar a tabela ACESSO')
 
-    def remove(self, tag):
+    def remove(self, idacesso):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'DELETE FROM PASSARO WHERE tag_PASSARO=%s;', (tag))
+                    'DELETE FROM ACESSO WHERE idCAESSO=%s;', (idacesso))
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Não posso deletar {tag} na tabela passaro')
+                raise ValueError(f'Não posso deletar {idacesso} na tabela ACESSO')
