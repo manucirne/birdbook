@@ -88,9 +88,10 @@ CREATE TABLE IF NOT EXISTS birdbook.POST (
   username VARCHAR(45) NOT NULL,
   FOREIGN KEY (username)
     REFERENCES birdbook.USUARIO(username),
+stamp_post TIMESTAMP DEFAULT current_timestamp NOT NULL COMMENT 'momento em que a publicação do post aconteceu',
   PRIMARY KEY (idPOST));
 
-
+CREATE INDEX stamp_post ON POST (stamp_post ASC);
 
 -- -----------------------------------------------------
 -- Table birdbook.TAG_PASSARO_POST
@@ -156,7 +157,7 @@ CREATE TABLE IF NOT EXISTS birdbook.VISUALIZACAO (
   username VARCHAR(45) NOT NULL COMMENT 'usuário que executou a visualização',
 	FOREIGN KEY (username)
     REFERENCES birdbook.USUARIO(username),
-  stamp TIMESTAMP(6) NOT NULL COMMENT 'momento em que a visualização aconteceu',
+  stamp TIMESTAMP DEFAULT current_timestamp NOT NULL COMMENT 'momento em que a visualização aconteceu',
   PRIMARY KEY (idACESSO, idPOST, stamp));
 
 
