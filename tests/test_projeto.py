@@ -13,6 +13,7 @@ from post import Post
 from usuario import Usuario
 from cidade import Cidade
 from visualizacao import Visualizacao
+from acesso import Acesso
 
 
 class TestProjeto(unittest.TestCase):
@@ -304,7 +305,6 @@ class TestProjeto(unittest.TestCase):
     def test_adiciona_post(self):
         conn = self.__class__.connection
         pst = Post(conn)
-        pas = Passaro(conn)
         cid = Cidade(conn)
         user = Usuario(conn)
 
@@ -433,6 +433,41 @@ class TestProjeto(unittest.TestCase):
             pst.remove(p)
 
         # Verifica que todos os perigos foram removidos.
+        res = pst.lista()
+        self.assertFalse(res)
+
+    def test_adiciona_vizualizacao(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+        vis = Visualizacao(conn)
+        aces = Acesso(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        user.adiciona(*oldUser)
+        id = oldUser[0]
+        pst.adiciona(id, *oldPst)
+
+        psts = pst.lista()
+        self.assertTrue(any(elem in psts[0] for elem in oldPst))
+        idPost = psts[0][0]
+
+        aces.adiciona('127.0.0.1', 'Chrome', 'Android')
+        res = aces.lista()
+        idAcesso = res[0][0]
+        vis.adiciona(idAcesso, idAcesso, id)
+        res = vis.lista()
+        self.assertFalse(res)
+
+        pst.remove(idPost)
         res = pst.lista()
         self.assertFalse(res)
 
