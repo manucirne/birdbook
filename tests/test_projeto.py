@@ -535,12 +535,15 @@ class TestProjeto(unittest.TestCase):
         oldUserju = ('juju', "julia@passaros.com",
                    "Julia Pessoa", cids[0][0])
 
+        oldPas = ('sabia', 'saiazito sabioluns', 'sabii')
+
         user.adiciona(*oldUser)
         user.adiciona(*oldUserju)
         res = user.acha(oldUser[0])
         resju = user.acha(oldUserju[0])
         self.assertSequenceEqual(res, oldUser)
         self.assertSequenceEqual(resju, oldUserju)
+        pas.adiciona(*oldPas)
 
         id = res[0]
         pst.adiciona(id, *oldPst)
