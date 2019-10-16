@@ -523,6 +523,7 @@ class TestProjeto(unittest.TestCase):
         pst = Post(conn)
         cid = Cidade(conn)
         user = Usuario(conn)
+        pas = Passaro(conn)
 
         # Pega todas as cidades
         cids = cid.lista()
@@ -558,6 +559,11 @@ class TestProjeto(unittest.TestCase):
         dici_tags = pst.parser_post(oldPst[1])
 
         pst.cria_tags(dici_tags, idPost)
+
+        tagpas = pst.lista_tags_passaro()
+        self.assertTrue(any(elem in tagpas[0] for elem in dici_tags['#']))
+        tagusu = pst.lista_tags_usuario()
+        self.assertTrue(any(elem in tagusu[0] for elem in dici_tags['@']))
 
         user.remove(user.acha(oldUser[0]))
         res = pst.lista()
