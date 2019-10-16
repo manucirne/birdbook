@@ -477,12 +477,14 @@ class TestProjeto(unittest.TestCase):
         pst = Post(conn)
         cid = Cidade(conn)
         user = Usuario(conn)
+        pas = Passaro(conn)
 
         # Pega todas as cidades
         cids = cid.lista()
 
         oldPst = ('Um novo passaro',
-                  'Encontrei um passaro novo na minha caminhada @juju #sabiá', 'https://passarito.com')
+                  'Encontrei um passaro novo na minha caminhada @juju #sabia', 'https://passarito.com')
+        oldPas = ('sabia', 'saiazito sabioluns', 'sabii')
         oldUser = ('david', "david@passaros.com",
                    "David Fogelman", cids[0][0])
 
@@ -495,6 +497,7 @@ class TestProjeto(unittest.TestCase):
         resju = user.acha(oldUserju[0])
         self.assertSequenceEqual(res, oldUser)
         self.assertSequenceEqual(resju, oldUserju)
+        pas.adiciona(*oldPas)
 
         id = res[0]
         pst.adiciona(id, *oldPst)
