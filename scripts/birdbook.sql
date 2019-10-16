@@ -88,10 +88,7 @@ CREATE TABLE IF NOT EXISTS birdbook.POST (
   username VARCHAR(45) NOT NULL,
   FOREIGN KEY (username)
     REFERENCES birdbook.USUARIO(username),
-stamp_post TIMESTAMP DEFAULT current_timestamp NOT NULL COMMENT 'momento em que a publicação do post aconteceu',
-  PRIMARY KEY (idPOST));
-
-CREATE INDEX stamp_post ON POST (stamp_post ASC);
+    PRIMARY KEY (idPOST));
 
 -- -----------------------------------------------------
 -- Table birdbook.TAG_PASSARO_POST
@@ -106,26 +103,6 @@ CREATE TABLE IF NOT EXISTS birdbook.TAG_PASSARO_POST (
   FOREIGN KEY (idPOST)
     REFERENCES birdbook.POST(idPOST),
   PRIMARY KEY (tag_PASSARO, idPOST));
-
-
-
-USE birdbook ;
-
--- -----------------------------------------------------
--- Table birdbook.JOINHA
--- -----------------------------------------------------
-DROP TABLE IF EXISTS birdbook.JOINHA ;
-
-CREATE TABLE IF NOT EXISTS birdbook.JOINHA (
-  username VARCHAR(45) NOT NULL COMMENT 'username do usuário que deu joinha no post',
-  FOREIGN KEY (username)
-    REFERENCES birdbook.USUARIO(username),
-  reacao INT DEFAULT 0 COMMENT '-1 NÃO CURTIU, 0 NEUTRO E 1 CURTIU',
-  idPOST INT NOT NULL COMMENT 'id do post que foi curtido pelo usuário',
-  FOREIGN KEY (idPOST)
-    REFERENCES birdbook.POST(idPOST),
-  CONSTRAINT CURT_ck CHECK (reacao IN (-1,0,1)),
-  PRIMARY KEY (username, idPOST));
 
 
 -- -----------------------------------------------------
@@ -223,8 +200,6 @@ BEGIN
 			WHERE TAG_USUARIO_POST.idPOST = NEW.idPOST;
 		DELETE FROM VISUALIZACAO 
 			WHERE VISUALIZACAO.idPOST = NEW.idPOST;
-		DELETE FROM JOINHA 
-			WHERE JOINHA.idPOST = NEW.idPOST;
 	END IF;
 END$$
 
