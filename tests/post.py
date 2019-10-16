@@ -129,3 +129,55 @@ class Post():
                             ''', (id_post, usu))
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Não foi possível criar as tags')
+    
+    def lista_tags_passaro(self):
+        with self.conn.cursor() as cursor:
+            try:
+                cursor.execute('''
+                        SELECT tag_PASSARO FROM TAG_PASSARO_POST;''')
+                res = cursor.fetchall()
+                if res:
+                    return res
+            except:
+                raise ValueError(f'Não foi possível listar as tags de TAG_PASSARO_POST')
+            return None
+
+    def lista_tags_usuario(self):
+        with self.conn.cursor() as cursor:
+            try:
+                cursor.execute('''
+                        SELECT username FROM TAG_USUARIO_POST;''')
+                res = cursor.fetchall()
+                if res:
+                    return res
+            except:
+                raise ValueError(f'Não foi possível listar as tags de TAG_USUARIO_POST')
+            return None
+
+    def acha_tags_por_PK_passaro(self, idPOST):
+        with self.conn.cursor() as cursor:
+            try:
+                res = cursor.execute(
+                    'SELECT tagPASSARO FROM TAG_PASSARO_POST WHERE idPOST = (%s);', (idPOST))
+
+                res = cursor.fetchone()
+                if res:
+                    return res
+
+            except pymysql.err.IntegrityError as e:
+                raise ValueError(f'tag não encontrada')
+            return None
+
+    def acha_tags_por_PK_usuario(self, idPOST):
+        with self.conn.cursor() as cursor:
+            try:
+                res = cursor.execute(
+                    'SELECT username FROM TAG_USUARIO_POST WHERE idPOST = (%s);', (idPOST))
+
+                res = cursor.fetchone()
+                if res:
+                    return res
+
+            except pymysql.err.IntegrityError as e:
+                raise ValueError(f'tag não encontrada')
+            return None
