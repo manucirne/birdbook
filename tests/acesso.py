@@ -16,16 +16,9 @@ class Acesso():
                             FROM ACESSO;
                         ''')
 
-                if res:
-                    return res.fetchone()[0]
-                else:
-                    return None
-
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso inserir {ip}, {browser}, {aparelho} na tabela ACESSO')
-
-            return None
 
     def acha(self, idACESSO):
         with self.conn.cursor() as cursor:
@@ -50,11 +43,10 @@ class Acesso():
                 if res:
                     return res
 
-                else:
-                    return None
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso encontrar {aparelho} na tabela ACESSO')
+            return None
 
     def acha_browser(self, browser):
         with self.conn.cursor() as cursor:
@@ -65,11 +57,10 @@ class Acesso():
                 if res:
                     return res
 
-                else:
-                    return None
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso encontrar {browser} na tabela ACESSO')
+            return None
 
     def acha_IP(self, IP):
         with self.conn.cursor() as cursor:
@@ -80,11 +71,10 @@ class Acesso():
                 if res:
                     return res
 
-                else:
-                    return None
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso encontrar {IP} na tabela ACESSO')
+            return None
 
     def lista(self):
         with self.conn.cursor() as cursor:
@@ -105,11 +95,6 @@ class Acesso():
             try:
                 cursor.execute(
                     'UPDATE CESSO SET IP=%s, Browser=%s WHERE Aparelho=%s;', (ip, browser, aparelho))
-                res = cursor.fetchone()
-                if res:
-                    return res[0]
-                else:
-                    return None
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso atualizar a tabela ACESSO')
@@ -120,4 +105,5 @@ class Acesso():
                 cursor.execute(
                     'DELETE FROM ACESSO WHERE idCAESSO=%s;', (idacesso))
             except pymysql.err.IntegrityError as e:
-                raise ValueError(f'Não posso deletar {idacesso} na tabela ACESSO')
+                raise ValueError(
+                    f'Não posso deletar {idacesso} na tabela ACESSO')
