@@ -436,6 +436,55 @@ class TestProjeto(unittest.TestCase):
         res = pst.lista()
         self.assertFalse(res)
 
+    def test_adiciona_acesso(self):
+        conn = self.__class__.connection
+        aces = Acesso(conn)
+
+        oldAces = ('1.2.3.4', 'Tor Browser', 'Dell')
+        aces.adiciona(*oldAces)
+
+        ip = aces.acha_IP(oldAces[0])
+        br = aces.acha_browser(oldAces[1])
+        ap = aces.acha_aparelho(oldAces[2])
+
+        self.assertTrue(any(elem in ip[0] for elem in oldAces))
+        self.assertTrue(any(elem in br[0] for elem in oldAces))
+        self.assertTrue(any(elem in ap[0] for elem in oldAces))
+
+        id = ip[0][0]
+        aces.remove(id)
+
+        res = aces.lista()
+        self.assertIsNone(res)
+
+    def test_lista_acesso(self):
+        conn = self.__class__.connection
+        aces = Acesso(conn)
+        allAcess = [('1.2.3.4', 'Tor Browser', 'Dell'),
+                    ('4.3.2.1', 'Microsoft Edge', 'Celular da Xuxa')
+                    ]
+        # Verifica que ainda não tem pássaros no sistema.
+        res = aces.lista()
+        self.assertFalse(res)
+
+        # Adiciona alguns perigos.
+        acess_id = []
+        for a in allAcess:
+            aces.adiciona(*a)
+            acess_id.append(aces.acha_IP(a[0])[0])
+
+        # Verifica se os perigos foram adicionados corretamente.
+        res = aces.lista()
+        self.assertCountEqual(res, (acess_id))
+
+        # Remove os perigos.
+        for u in acess_id:
+            aces.remove(u[0])
+
+        # Verifica que todos os perigos foram removidos.
+        res = aces.lista()
+        self.assertFalse(res)
+
     def test_adiciona_vizualizacao(self):
         conn = self.__class__.connection
         pst = Post(conn)
@@ -463,13 +512,65 @@ class TestProjeto(unittest.TestCase):
         aces.adiciona('127.0.0.1', 'Chrome', 'Android')
         res = aces.lista()
         idAcesso = res[0][0]
-        vis.adiciona(idAcesso, idAcesso, id)
-        res = vis.lista()
-        self.assertFalse(res)
 
+        oldVis = (idAcesso, idPost, id)
+        vis.adiciona(*oldVis)
+
+        viss = vis.lista()
+        self.assertTrue(any(elem in viss[0] for elem in oldVis))
+
+        # DELETA POST
         pst.remove(idPost)
         res = pst.lista()
         self.assertFalse(res)
+
+        # TESTA TRIGGER DE POST
+        viss = vis.lista()
+        self.assertFalse(viss)
+
+        acess = aces.lista()
+        self.assertFalse(acess)
+
+
+def test_remove_vizualizacao(self):
+    conn = self.__class__.connection
+    pst = Post(conn)
+    cid = Cidade(conn)
+    user = Usuario(conn)
+    vis = Visualizacao(conn)
+    aces = Acesso(conn)
+
+    # Pega todas as cidades
+    cids = cid.lista()
+
+    oldPst = ('Um novo passaro',
+              'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
+    oldUser = ('david', "david@passaros.com",
+               "David Fogelman", cids[0][0])
+
+    user.adiciona(*oldUser)
+    id = oldUser[0]
+    pst.adiciona(id, *oldPst)
+
+    psts = pst.lista()
+    idPost = psts[0][0]
+
+    aces.adiciona('127.0.0.1', 'Chrome', 'Android')
+    res = aces.lista()
+    idAcesso = res[0][0]
+
+    oldVis = (idAcesso, idPost, id)
+    vis.adiciona(*oldVis)
+
+    viss = vis.lista()
+    self.assertTrue(any(elem in viss[0] for elem in oldVis))
+
+    vis.remove(*oldVis)
+    res = vis.lista()
+    self.assertIsNone(res)
+
+    acess = aces.lista()
+    self.assertIsNone(acess)
 
 
 def run_sql_script(filename):

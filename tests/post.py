@@ -20,7 +20,7 @@ class Post():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'INSERT INTO POST (titulo, texto, URL_foto, USUARIO_username) VALUES ( %s,%s, %s, %s);', (titulo, texto, URL_foto, username))
+                    'INSERT INTO POST (titulo, texto, URL_foto, username) VALUES ( %s,%s, %s, %s);', (titulo, texto, URL_foto, username))
 
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
