@@ -573,6 +573,97 @@ def test_remove_vizualizacao(self):
     self.assertIsNone(acess)
 
 
+    def test_adiciona_tags(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada @juju #sabiá', 'https://passarito.com')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        oldUserju = ('juju', "julia@passaros.com",
+                   "Julia Pessoa", cids[0][0])
+
+        user.adiciona(*oldUser)
+        user.adiciona(*oldUserju)
+        res = user.acha(oldUser[0])
+        resju = user.acha(oldUserju[0])
+        self.assertSequenceEqual(res, oldUser)
+        self.assertSequenceEqual(resju, oldUserju)
+
+        id = res[0]
+        pst.adiciona(id, *oldPst)
+
+        psts = pst.lista()
+        self.assertTrue(any(elem in psts[0] for elem in oldPst))
+
+        res = pst.acha_por_id(psts[0][0])
+        self.assertSequenceEqual(res, psts[0])
+
+        idPost = psts[0][0]
+        dici_tags = pst.parser_post(oldPst[1])
+
+        pst.cria_tags(dici_tags, idPost)
+
+        tagpas = pst.lista_tags_passaro()
+        self.assertTrue(any(elem in tagpas[0] for elem in dici_tags['#']))
+        tagusu = pst.lista_tags_usuario()
+        self.assertTrue(any(elem in tagusu[0] for elem in dici_tags['@']))
+
+    def test_remove_usu_tags(self): #removendo usuario tag é remomvida
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada @juju #sabiá', 'https://passarito.com')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        oldUserju = ('juju', "julia@passaros.com",
+                   "Julia Pessoa", cids[0][0])
+
+        user.adiciona(*oldUser)
+        user.adiciona(*oldUserju)
+        res = user.acha(oldUser[0])
+        resju = user.acha(oldUserju[0])
+        self.assertSequenceEqual(res, oldUser)
+        self.assertSequenceEqual(resju, oldUserju)
+
+        id = res[0]
+        pst.adiciona(id, *oldPst)
+
+        psts = pst.lista()
+        self.assertTrue(any(elem in psts[0] for elem in oldPst))
+
+        res = pst.acha_por_id(psts[0][0])
+        self.assertSequenceEqual(res, psts[0])
+
+        idPost = psts[0][0]
+        dici_tags = pst.parser_post(oldPst[1])
+
+        pst.cria_tags(dici_tags, idPost)
+
+        user.remove(user.acha(oldUser[0]))
+        res = pst.lista()
+        self.assertIsNone(res)
+        tagsU = pst.acha_tags_por_PK_usuario(idPost)
+        self.assertIsNone(tagsU)
+        tagsP = pst.acha_tags_por_PK_passaro(idPost)
+        self.assertIsNone(tagsP)
+
+
+
 def run_sql_script(filename):
     global config
     with open(filename, 'rb') as f:
