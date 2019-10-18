@@ -10,4 +10,3 @@ BEGIN
     ORDER BY quantas_visuializacoes DESC
     LIMIT 3;
 END//
-DELIMITER ;

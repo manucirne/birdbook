@@ -1,0 +1,9 @@
+USE birdbook;
+
+DROP PROCEDURE IF EXISTS referenciam_usu;
+
+CREATE PROCEDURE referenciam_usu(user_ VARCHAR(45))    
+SELECT POST.username
+FROM POST
+INNER JOIN TAG_USUARIO_POST ON TAG_USUARIO_POST.idPOST = POST.idPOST
+WHERE TAG_USUARIO_POST.username = user_;  
