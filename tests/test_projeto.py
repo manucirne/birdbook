@@ -14,6 +14,7 @@ from usuario import Usuario
 from cidade import Cidade
 from visualizacao import Visualizacao
 from acesso import Acesso
+from joinha import Joinha
 
 
 class TestProjeto(unittest.TestCase):
@@ -572,7 +573,6 @@ def test_remove_vizualizacao(self):
     acess = aces.lista()
     self.assertIsNone(acess)
 
-
     def test_adiciona_tags(self):
         conn = self.__class__.connection
         pst = Post(conn)
@@ -590,7 +590,7 @@ def test_remove_vizualizacao(self):
                    "David Fogelman", cids[0][0])
 
         oldUserju = ('juju', "julia@passaros.com",
-                   "Julia Pessoa", cids[0][0])
+                     "Julia Pessoa", cids[0][0])
 
         user.adiciona(*oldUser)
         user.adiciona(*oldUserju)
@@ -619,7 +619,7 @@ def test_remove_vizualizacao(self):
         tagusu = pst.lista_tags_usuario()
         self.assertTrue(any(elem in tagusu[0] for elem in dici_tags['@']))
 
-    def test_remove_usu_tags(self): #removendo usuario tag é remomvida
+    def test_remove_usu_tags(self):  # removendo usuario tag é remomvida
         conn = self.__class__.connection
         pst = Post(conn)
         cid = Cidade(conn)
@@ -635,7 +635,7 @@ def test_remove_vizualizacao(self):
                    "David Fogelman", cids[0][0])
 
         oldUserju = ('juju', "julia@passaros.com",
-                   "Julia Pessoa", cids[0][0])
+                     "Julia Pessoa", cids[0][0])
 
         oldPas = ('sabia', 'saiazito sabioluns', 'sabii')
 
@@ -674,6 +674,44 @@ def test_remove_vizualizacao(self):
         tagsP = pst.acha_tags_por_PK_passaro(idPost)
         self.assertIsNone(tagsP)
 
+    def test_adiciona_reacao(self):
+        conn = self.__class__.connection
+
+        joi = Joinha(conn)
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+        pas = Passaro(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada @juju #sabia', 'https://passarito.com')
+        oldPas = ('sabia', 'saiazito sabioluns', 'sabii')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        oldUserju = ('juju', "julia@passaros.com",
+                     "Julia Pessoa", cids[0][0])
+
+        id = user.adiciona(*oldUser)[0]
+        pas.adiciona(*oldPas)
+        pst.adiciona(id, *oldPst)
+
+        user.adiciona(*oldUserju)
+        idJu = user.acha(oldUserju[0])[0]
+
+        psts = pst.lista()
+        res = pst.acha_por_id(psts[0][0])
+        idPost = psts[0][0]
+        dici_tags = pst.parser_post(oldPst[1])
+        pst.cria_tags(dici_tags, idPost)
+
+        joi.adiciona(idJu, idPost, 0)
+        reac = joi.acha_reacao(idJu, idPost)
+
+        self.assertIsNone(reac)
 
 
 def run_sql_script(filename):
