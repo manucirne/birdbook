@@ -1,0 +1,19 @@
+USE birdbook;
+DROP PROCEDURE IF EXISTS mais_pop;
+DROP TABLE IF EXISTS  visu_post;
+DELIMITER //
+CREATE PROCEDURE mais_pop()
+BEGIN
+	CREATE TABLE visu_post
+		SELECT POST.username, USUARIO.idCIDADE, COUNT(POST.idPOST) AS cnt
+		FROM POST
+		INNER JOIN VISUALIZACAO ON VISUALIZACAO.idPOST = POST.idPOST
+        INNER JOIN USUARIO ON POST.username = USUARIO.username
+        GROUP BY username;
+        SELECT idCIDADE, MAX(cnt) as m FROM visu_post GROUP BY idCIDADE;
+	SELECT B.idCIDADE, B.username, cnt
+	FROM (SELECT idCIDADE, MAX(cnt) as m FROM visu_post GROUP BY idCIDADE)
+    AS A INNER JOIN visu_post AS B ON A.idCIDADE = B.idCIDADE AND A.m = B.cnt;
+    DROP TABLE visu_post;
+END//
+

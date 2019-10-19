@@ -624,6 +624,7 @@ def test_remove_vizualizacao(self):
         pst = Post(conn)
         cid = Cidade(conn)
         user = Usuario(conn)
+        pas = Passaro(conn)
 
         # Pega todas as cidades
         cids = cid.lista()
@@ -636,12 +637,15 @@ def test_remove_vizualizacao(self):
         oldUserju = ('juju', "julia@passaros.com",
                    "Julia Pessoa", cids[0][0])
 
+        oldPas = ('sabia', 'saiazito sabioluns', 'sabii')
+
         user.adiciona(*oldUser)
         user.adiciona(*oldUserju)
         res = user.acha(oldUser[0])
         resju = user.acha(oldUserju[0])
         self.assertSequenceEqual(res, oldUser)
         self.assertSequenceEqual(resju, oldUserju)
+        pas.adiciona(*oldPas)
 
         id = res[0]
         pst.adiciona(id, *oldPst)
@@ -656,6 +660,11 @@ def test_remove_vizualizacao(self):
         dici_tags = pst.parser_post(oldPst[1])
 
         pst.cria_tags(dici_tags, idPost)
+
+        tagpas = pst.lista_tags_passaro()
+        self.assertTrue(any(elem in tagpas[0] for elem in dici_tags['#']))
+        tagusu = pst.lista_tags_usuario()
+        self.assertTrue(any(elem in tagusu[0] for elem in dici_tags['@']))
 
         user.remove(user.acha(oldUser[0]))
         res = pst.lista()
