@@ -1,4 +1,3 @@
 *.bak
 *.cnf
-config_tests.json
 *__pycache__*

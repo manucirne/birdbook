@@ -9,9 +9,7 @@ import subprocess
 import unittest
 import pymysql
 
-cur_dir = os.getcwd()
-modules_path = os.path.join(cur_dir, '..', 'modules')
-sys.path.append(modules_path)
+sys.path.append(os.path.join(os.getcwd(), '..', 'modules'))
 from passaro import Passaro
 from post import Post
 from usuario import Usuario
@@ -745,7 +743,7 @@ def tearDownModule():
 
 if __name__ == '__main__':
     global config
-    with open('config_tests.json', 'r') as f:
+    with open(os.path.join(os.getcwd(), '..', 'config', 'config_tests.json'), 'r') as f:
         config = json.load(f)
     logging.basicConfig(filename=config['LOGFILE'], level=logging.DEBUG)
     unittest.main(verbosity=2)

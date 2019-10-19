@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS birdbook.JOINHA (
 
 
 
-# timestamp_post
+-- timestamp_post
 ALTER TABLE POST
 ADD stamp_post TIMESTAMP DEFAULT current_timestamp NOT NULL COMMENT 'momento em que a publicação do post aconteceu';
 CREATE INDEX stamp_post ON POST (stamp_post DESC);
@@ -32,7 +32,7 @@ BEGIN
 END //
 
 
-#mais pop
+-- mais pop
 DROP PROCEDURE IF EXISTS mais_pop;
 DROP TABLE IF EXISTS visu_post;
 DELIMITER //
@@ -52,7 +52,7 @@ BEGIN
 END//
 
 
-# mais visualizador
+-- mais visualizador
 
 DROP PROCEDURE IF EXISTS mais_visualizador;
 
@@ -78,7 +78,7 @@ BEGIN
 END//
 DELIMITER ;
 
-# referencia usuario
+-- referencia usuario
 
 DROP PROCEDURE IF EXISTS referenciam_usu;
 
