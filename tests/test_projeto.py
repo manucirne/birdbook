@@ -4,10 +4,14 @@ import logging
 import os
 import os.path
 import re
+import sys
 import subprocess
 import unittest
 import pymysql
 
+cur_dir = os.getcwd()
+modules_path = os.path.join(cur_dir, '..', 'modules')
+sys.path.append(modules_path)
 from passaro import Passaro
 from post import Post
 from usuario import Usuario
@@ -16,7 +20,7 @@ from visualizacao import Visualizacao
 from acesso import Acesso
 from joinha import Joinha
 
-
+sys.path.append(os.getcwd())
 class TestProjeto(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

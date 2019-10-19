@@ -1,6 +1,6 @@
 {
   "MYSQL": "mysql",
-  "HOST": "127.0.0.1",
+  "HOST": "0.0.0.0",
   "USER": "root",
   "PASS": "megadados",
   "LOGFILE": "log.txt"
