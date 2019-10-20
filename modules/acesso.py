@@ -15,7 +15,7 @@ class Acesso():
                         SELECT LAST_INSERT_ID()
                             FROM ACESSO;
                         ''')
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso inserir {ip}, {browser}, {aparelho} na tabela ACESSO')
@@ -95,7 +95,7 @@ class Acesso():
             try:
                 cursor.execute(
                     'DELETE FROM ACESSO WHERE idACESSO=%s;', (idacesso))
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso deletar {idacesso} na tabela ACESSO')

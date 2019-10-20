@@ -35,18 +35,19 @@ BEGIN
 END$$
 
 
-DROP PROCEDURE IF EXISTS foto_passaro;
-DELIMITER //
+DELIMITER // 
+DROP PROCEDURE IF EXISTS birdbook.foto_passaro;
 CREATE PROCEDURE foto_passaro()
 BEGIN
-    SELECT tag_PASSARO, URL_foto FROM TAG_PASSARO_POST 
+    SELECT tag_PASSARO, POST.URL_foto FROM TAG_PASSARO_POST 
     INNER JOIN POST ON POST.idPOST = TAG_PASSARO_POST.idPOST;
 END//
 
 
+
+DELIMITER //
 DROP PROCEDURE IF EXISTS mais_pop;
 DROP TABLE IF EXISTS  visu_post;
-DELIMITER //
 
 CREATE PROCEDURE mais_pop()
 BEGIN
@@ -64,9 +65,9 @@ BEGIN
 END//
 
 
-DROP PROCEDURE IF EXISTS mais_visualizador;
 
 DELIMITER //
+DROP PROCEDURE IF EXISTS mais_visualizador;
 CREATE PROCEDURE mais_visualizador()
 BEGIN
     SELECT username, COUNT(username) as quantas_visuializacoes FROM VISUALIZACAO
@@ -75,8 +76,8 @@ BEGIN
     LIMIT 3;
 END//
 
-DROP PROCEDURE IF EXISTS ordena_post_usuario;
 DELIMITER //
+DROP PROCEDURE IF EXISTS ordena_post_usuario;
 
 CREATE PROCEDURE ordena_post_usuario(userN VARCHAR(45))
 BEGIN
@@ -84,8 +85,8 @@ BEGIN
     ORDER BY stamp_post DESC;
 END//
 
-DROP PROCEDURE IF EXISTS referenciam_usu;
 DELIMITER ;
+DROP PROCEDURE IF EXISTS referenciam_usu;
 CREATE PROCEDURE referenciam_usu(user_ VARCHAR(45))    
 SELECT POST.username
 FROM POST

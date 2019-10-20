@@ -10,7 +10,7 @@ class Usuario():
             try:
                 cursor.execute(
                     'INSERT INTO USUARIO (username, email, nome, idCIDADE) VALUES (%s, %s, %s, %s)', (username, email, nome, idCIDADE))
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso inserir {username}, {email}, {nome} e {idCIDADE} na tabela USUARIO')
@@ -39,7 +39,7 @@ class Usuario():
                 res = cursor.fetchall()
                 if res:
                     return res
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Usuários não podem ser mostrados')
 
@@ -50,7 +50,7 @@ class Usuario():
             try:
                 cursor.execute(
                     'UPDATE USUARIO SET nome=%s where username=%s', (novo_nome, username))
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Usuário com username = {username} não encontrado para ser modificado')
@@ -60,7 +60,7 @@ class Usuario():
             try:
                 cursor.execute(
                     'UPDATE USUARIO SET email=%s where username=%s', (novo_email, username))
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Usuário com username = {username} não encontrado para ser modificado')
@@ -70,7 +70,7 @@ class Usuario():
             try:
                 cursor.execute(
                     'UPDATE USUARIO SET idCIDADE=%s where username=%s', (nova_cidade, username))
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Usuário com username = {username} não encontrado para ser modificado')
@@ -80,7 +80,7 @@ class Usuario():
             try:
                 cursor.execute(
                     'DELETE FROM USUARIO WHERE username = %s;', (username))
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso deletar o usuário com username = {username} na tabela usuário')
@@ -90,7 +90,7 @@ class Usuario():
             try:
                 cursor.execute(
                     'INSERT INTO USUARIO_PREFERE_PASSARO (username, tag_PASSARO) VALUES (%s, %s)', (username, passaro))
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso inserir preferência do usuário: {username} na tabela USUARIO_PREFERE_PASSARO')
@@ -101,7 +101,7 @@ class Usuario():
             try:
                 cursor.execute(
                     'DELETE USUARIO_PREFERE_PASSARO WHERE username = %s AND tag_PASSARO=%s;', (username, passaro))
-                self.conn.commit()
+                #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso deletar preferência do usuário: {username} na tabela USUARIO_PREFERE_PASSARO')
