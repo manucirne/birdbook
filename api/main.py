@@ -32,7 +32,20 @@ class passaroObj(BaseModel):
     tag: str
     especie: str
     nome_pop: str
+class usuarioObj(BaseModel):
+    nome: str
+    especie: str
+    nome_pop: str
     
+class joinhaObj(BaseModel):
+    user_id: str
+    post_id: str
+    reacao: str
+    
+class postObj(BaseModel):
+    user_id: str
+    post_id: str
+    reacao: str
 
 @app.get("/")
 def read_root():
@@ -40,7 +53,7 @@ def read_root():
 
 
 @app.get("/passaro")
-def read_passaro():
+def get_passaro():
     pas = Passaro(connection)
     passaros = pas.lista()
     if passaros:
@@ -48,19 +61,114 @@ def read_passaro():
     return []
 
 @app.post("/passaro")
-def read_passaro(item: passaroObj):
+def post_passaro(item: passaroObj):
     pas = Passaro(connection)
     try:
-        passaros = pas.adiciona(item.tag.lower(), item.especie, item.nome_pop)
+        pas.adiciona(item.tag.lower(), item.especie, item.nome_pop)
+        connection.commit()
     except Exception as e:
         return {"error": "Não foi possivel adicionar passaro"}
-    return 
+    return []
 
-# @app.put("/passaro")
-# def read_passaro(item: passaroObj):
-#     pas = Passaro(connection)
-#     print(item)
-#     passaros = pas.adiciona(item.tag, item.especie, item.nome_pop)
-#     # if passaros:
-#     #     return [ {nome: p[0]} for p in passaros]
-#     return []
+@app.put("/passaro")
+def put_passaro(item: passaroObj):
+    pas = Passaro(connection)
+    try:
+        pas.atualiza(item.tag.lower(), item.especie, item.nome_pop)
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}
+    return []
+
+@app.get("/passaro/{passaro_id}")
+def get_passaro(passaro_id: str):
+    pas = Passaro(connection)
+    try:
+        passaros = pas.acha(passaro_id.lower())
+        return passaros
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}
+
+@app.delete("/passaro/{passaro_id}")
+def delete_passaro(passaro_id: str):
+    pas = Passaro(connection)
+    try:
+        pas.remove(passaro_id.lower())
+        return {}
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}
+
+# User 
+@app.get("/usuario")
+def read_usuario():
+    usr = Usuario(connection)
+    usuario = usr.lista()
+    if usuario:
+        return [ {"tag": p[0], "especie": p[1], "nome_pop": p[2]} for p in passaros]
+    return []
+
+@app.post("/usuario")
+def post_usuario(item: passaroObj):
+    pas = Passaro(connection)
+    try:
+        pas.adiciona(item.tag.lower(), item.especie, item.nome_pop)
+        connection.commit()
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}
+    return []
+
+@app.put("/usuario")
+def put_usuario(item: passaroObj):
+    pas = Passaro(connection)
+    try:
+        pas.atualiza(item.tag.lower(), item.especie, item.nome_pop)
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}
+    return []
+
+@app.get("/usuario/{usuario_id}")
+def get_id_usuario(usuario_id: str):
+    pas = Passaro(connection)
+    try:
+        passaros = pas.acha(passaro_id.lower())
+        return passaros
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}
+
+@app.delete("/usuario/{usuario_id}")
+def delete_usuario(usuario_id: str):
+    pas = Passaro(connection)
+    try:
+        pas.remove(passaro_id.lower())
+        return {}
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}
+
+
+
+@app.post("/joinha")
+def add_joinha(user_id: str):
+    pas = Passaro(connection)
+    try:
+        pas.remove(passaro_id.lower())
+        return {}
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}
+
+@app.post("/post")
+def add_post(user_id: str):
+    pas = Passaro(connection)
+    try:
+        pas.remove(passaro_id.lower())
+        return {}
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}
+
+
+@app.delete("/post")
+def add_post(user_id: str):
+    pas = Passaro(connection)
+    try:
+        pas.remove(passaro_id.lower())
+        return {}
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar passaro"}

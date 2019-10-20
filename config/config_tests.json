@@ -1,7 +1,7 @@
 {
   "MYSQL": "mysql",
   "HOST": "0.0.0.0",
-  "USER": "",
-  "PASS": "",
+  "USER": "root",
+  "PASS": "megadados",
   "LOGFILE": "log.txt"
 }

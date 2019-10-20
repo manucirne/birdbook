@@ -21,7 +21,7 @@ class Post():
             try:
                 cursor.execute(
                     'INSERT INTO POST (titulo, texto, URL_foto, username) VALUES ( %s,%s, %s, %s);', (titulo, texto, URL_foto, username))
-
+                self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso inserir {titulo}, {texto} e {URL_foto} na tabela POST;')
@@ -58,6 +58,7 @@ class Post():
             try:
                 cursor.execute(
                     'UPDATE POST SET titulo=%s where idPOST=%s', (novo_titulo, idPOST))
+                self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Post com idPOST = {idPOST} não encontrado para ser modificado')
@@ -67,6 +68,7 @@ class Post():
             try:
                 cursor.execute(
                     'UPDATE POST SET texto=%s where idPOST=%s', (novo_texto, idPOST))
+                self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'POST com idPOST = {idPOST} não encontrado para ser modificado')
@@ -76,6 +78,7 @@ class Post():
             try:
                 cursor.execute(
                     'UPDATE POST SET URL_foto=%s where idPOST=%s', (nova_foto, idPOST))
+                self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'POST com idPOST = {idPOST} não encontrado para ser modificado')
@@ -85,6 +88,7 @@ class Post():
             try:
                 cursor.execute(
                     'UPDATE POST SET deleta=1 where idPOST=(%s)', (idPOST))
+                self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso deletar o post com idPOST = {idPOST} na tabela POST')
@@ -127,6 +131,7 @@ class Post():
                             INSERT INTO TAG_USUARIO_POST (idPost,username)
                             VALUES(%s,%s)
                             ''', (id_post, usu))
+                self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Não foi possível criar as tags')
     
