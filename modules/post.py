@@ -21,11 +21,17 @@ class Post():
             try:
                 cursor.execute(
                     'INSERT INTO POST (titulo, texto, URL_foto, username) VALUES ( %s,%s, %s, %s);', (titulo, texto, URL_foto, username))
+
+                cursor.execute('SELECT LAST_INSERT_ID()')
+                res = cursor.fetchone()
+                if res:
+                    return res
                 self.conn.commit()
+                
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso inserir {titulo}, {texto} e {URL_foto} na tabela POST;')
-
+            return None
     def acha_por_id(self, idPOST):
         with self.conn.cursor() as cursor:
             try:
