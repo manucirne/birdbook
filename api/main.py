@@ -32,10 +32,16 @@ class passaroObj(BaseModel):
     tag: str
     especie: str
     nome_pop: str
+
 class usuarioObj(BaseModel):
     nome: str
-    especie: str
-    nome_pop: str
+    email: str
+    username: str
+    idCidade: str
+
+class cidadeObj(BaseModel):
+    cidade: str
+    estado: str
     
 class joinhaObj(BaseModel):
     user_id: str
@@ -44,8 +50,15 @@ class joinhaObj(BaseModel):
     
 class postObj(BaseModel):
     user_id: str
-    post_id: str
-    reacao: str
+    titulo: str
+    texto: str
+    url_foto: str
+
+class postUpdateObj(BaseModel):
+    titulo: str
+    texto: str
+    url_foto: str
+
 
 @app.get("/")
 def read_root():
@@ -58,17 +71,16 @@ def get_passaro():
     passaros = pas.lista()
     if passaros:
         return [ {"tag": p[0], "especie": p[1], "nome_pop": p[2]} for p in passaros]
-    return []
+    return {}
 
 @app.post("/passaro")
 def post_passaro(item: passaroObj):
     pas = Passaro(connection)
     try:
         pas.adiciona(item.tag.lower(), item.especie, item.nome_pop)
-        connection.commit()
     except Exception as e:
         return {"error": "Não foi possivel adicionar passaro"}
-    return []
+    return {}
 
 @app.put("/passaro")
 def put_passaro(item: passaroObj):
@@ -77,14 +89,14 @@ def put_passaro(item: passaroObj):
         pas.atualiza(item.tag.lower(), item.especie, item.nome_pop)
     except Exception as e:
         return {"error": "Não foi possivel adicionar passaro"}
-    return []
+    return {}
 
 @app.get("/passaro/{passaro_id}")
 def get_passaro(passaro_id: str):
     pas = Passaro(connection)
     try:
-        passaros = pas.acha(passaro_id.lower())
-        return passaros
+        p = pas.acha(passaro_id.lower())
+        return {"tag": p[0], "especie": p[1], "nome_pop": p[2]}
     except Exception as e:
         return {"error": "Não foi possivel adicionar passaro"}
 
@@ -101,74 +113,174 @@ def delete_passaro(passaro_id: str):
 @app.get("/usuario")
 def read_usuario():
     usr = Usuario(connection)
-    usuario = usr.lista()
-    if usuario:
-        return [ {"tag": p[0], "especie": p[1], "nome_pop": p[2]} for p in passaros]
-    return []
+    usuarios = usr.lista()
+    try:
+        if usuarios:
+            return [ {"username": p[0], "email": p[1], "nome": p[2], "idCidade": p[3]} for p in usuarios]
+    except Exception as e:
+        print(e)
+        return {"error": "Não foi possivel listar usuário"}
+    return {}
+
 
 @app.post("/usuario")
-def post_usuario(item: passaroObj):
-    pas = Passaro(connection)
+def post_usuario(item: usuarioObj):
+    usr = Usuario(connection)
     try:
-        pas.adiciona(item.tag.lower(), item.especie, item.nome_pop)
-        connection.commit()
+        usr.adiciona(item.username, item.email, item.nome, item.idCidade)
     except Exception as e:
-        return {"error": "Não foi possivel adicionar passaro"}
-    return []
+        print(e)
+        return {"error": "Não foi possivel adicionar usuário"}
+    return {}
 
 @app.put("/usuario")
-def put_usuario(item: passaroObj):
-    pas = Passaro(connection)
+def put_usuario(item: usuarioObj):
+    usr = Usuario(connection)
     try:
-        pas.atualiza(item.tag.lower(), item.especie, item.nome_pop)
+        if(item.nome):
+            usr.muda_nome(item.username, item.nome)
+        if(item.email):
+            usr.muda_email(item.username, item.email)
+        if(item.idCidade):
+            usr.muda_cidade(item.username, item.idCidade)
+    
     except Exception as e:
-        return {"error": "Não foi possivel adicionar passaro"}
-    return []
+        return {"error": "Não foi possivel atualizar usuário"}
+    return {}
 
 @app.get("/usuario/{usuario_id}")
 def get_id_usuario(usuario_id: str):
-    pas = Passaro(connection)
+    usr = Usuario(connection)
     try:
-        passaros = pas.acha(passaro_id.lower())
-        return passaros
+        u = usr.acha(usuario_id)
+        return {"username": u[0], "email": u[1], "nome": u[2], "idCidade": u[3]}
     except Exception as e:
-        return {"error": "Não foi possivel adicionar passaro"}
+        return {"error": "Não foi possivel listar usuarios"}
 
 @app.delete("/usuario/{usuario_id}")
 def delete_usuario(usuario_id: str):
-    pas = Passaro(connection)
+    usr = Usuario(connection)
     try:
-        pas.remove(passaro_id.lower())
+        usr.remove(usuario_id)
         return {}
     except Exception as e:
-        return {"error": "Não foi possivel adicionar passaro"}
+        return {"error": f"Não foi possivel delerar o usuário {usuario_id} passaro"}
+
+# @app.post("/joinha")
+# def add_joinha(user_id: str):
+#     pas = Passaro(connection)
+#     try:
+#         pas.remove(passaro_id.lower())
+#         return {}
+#     except Exception as e:
+#         return {"error": "Não foi possivel adicionar joinha"}
+
+# @app.post("/post")
+# def add_post(user_id: str):
+#     pas = Passaro(connection)
+#     try:
+#         pas.remove(passaro_id.lower())
+#         return {}
+#     except Exception as e:
+#         return {"error": "Não foi possivel adicionar post"}
 
 
+# @app.delete("/post")
+# def add_post(item: postObj):
+#     return []
+#     pas = Passaro(connection)
+#     try:
+#         pas.remove(passaro_id.lower())
+#         return {}
+#     except Exception as e:
+#         return {"error": "Não foi possivel adicionar passaro"}
 
-@app.post("/joinha")
-def add_joinha(user_id: str):
-    pas = Passaro(connection)
+
+@app.post("/cidade")
+def add_cidade(item: cidadeObj):
+    cidade = Cidade(connection)
     try:
-        pas.remove(passaro_id.lower())
+        cidade.adiciona(item.cidade, item.estado)
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar cidade"}
+    return {}
+
+
+@app.get("/cidade")
+def get_cidades():
+    cidade = Cidade(connection)
+    try:
+        cidades = cidade.lista()
+        if cidades:
+            return [{"idCidade": c[0], "cidade":c[1], "estado":c[2]} for c in cidades]
+    except Exception as e:
+        return {"error": "Não foi possivel listar cidades"}
+
+
+@app.delete("/cidade/{cidade_id}")
+def delete_cidade(cidade_id: str):
+    cidade = Cidade(connection)
+    try:
+        cidades = cidade.remove_id(cidade_id)
         return {}
     except Exception as e:
-        return {"error": "Não foi possivel adicionar passaro"}
+        return {"error": "Não foi possivel listar cidades"}
 
 @app.post("/post")
-def add_post(user_id: str):
-    pas = Passaro(connection)
+def add_post(item: postObj):
+    post = Post(connection)
     try:
-        pas.remove(passaro_id.lower())
+        id = post.adiciona(item.user_id, item.titulo, item.texto, item.url_foto)
+        dici_tags = post.parser_post(item.texto)
+        post.cria_tags(dici_tags, id)
         return {}
     except Exception as e:
-        return {"error": "Não foi possivel adicionar passaro"}
+        print(e)
+        return {"error": "Não foi possivel adicionar post"}
 
-
-@app.delete("/post")
-def add_post(user_id: str):
-    pas = Passaro(connection)
+@app.get("/post")
+def get_posts():
+    post = Post(connection)
     try:
-        pas.remove(passaro_id.lower())
-        return {}
+        posts = post.lista()
+        if posts:
+            return [{"idPost": c[0], "titulo":c[1], "texto":c[2], "url_foto":c[3]} for c in posts]
     except Exception as e:
-        return {"error": "Não foi possivel adicionar passaro"}
+        return {"error": "Não foi possivel listar posts"}
+
+@app.delete("/post/{post_id}")
+def delete_posts(post_id:str):
+    post = Post(connection)
+    try:
+        posts = post.remove(post_id)
+    except Exception as e:
+        return {"error": f"Não foi possivel deletar post {post_id}"}
+    return {}
+
+@app.put("/post/{post_id}")
+def update_posts(post_id:str, item: postUpdateObj):
+    post = Post(connection)
+    try:
+        if item.titulo:
+            post.muda_titulo(post_id, item.titulo)
+        if item.texto:
+            dici_tags = post.parser_post(item.texto)
+            post.muda_texto(post_id, item.texto)
+            post.cria_tags(dici_tags, post_id)
+        if item.url_foto:
+            post.muda_foto(post_id, item.url_foto)
+    except Exception as e:
+        return {"error": "Não foi possivel realizar update posts"}
+    return {}
+
+@app.get("/post/{post_id}")
+def get_posts_id(post_id:str):
+    post = Post(connection)
+    try:
+        p = post.acha_por_id(post_id)
+        if p:
+            return {"idPost": p[0], "titulo":p[1], "texto":p[2], "url_foto":p[3]} 
+    except Exception as e:
+        print(e)
+        return {"error": "Não foi possivel encontrar posts"}
+    return {}
