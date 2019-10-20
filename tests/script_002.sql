@@ -35,19 +35,18 @@ BEGIN
 END$$
 
 
-DELIMITER // 
-DROP PROCEDURE IF EXISTS birdbook.foto_passaro;
+DELIMITER $$
+DROP PROCEDURE IF EXISTS birdbook.foto_passaro$$
 CREATE PROCEDURE foto_passaro()
 BEGIN
     SELECT tag_PASSARO, POST.URL_foto FROM TAG_PASSARO_POST 
     INNER JOIN POST ON POST.idPOST = TAG_PASSARO_POST.idPOST;
-END//
+END$$
 
 
-
-DELIMITER //
-DROP PROCEDURE IF EXISTS mais_pop;
-DROP TABLE IF EXISTS  visu_post;
+DELIMITER $$
+DROP PROCEDURE IF EXISTS mais_pop$$
+DROP TABLE IF EXISTS  visu_post$$
 
 CREATE PROCEDURE mais_pop()
 BEGIN
@@ -62,37 +61,38 @@ BEGIN
 	FROM (SELECT idCIDADE, MAX(cnt) as m FROM visu_post GROUP BY idCIDADE)
     AS A INNER JOIN visu_post AS B ON A.idCIDADE = B.idCIDADE AND A.m = B.cnt;
     DROP TABLE visu_post;
-END//
+END$$
 
 
 
-DELIMITER //
-DROP PROCEDURE IF EXISTS mais_visualizador;
+DELIMITER $$
+DROP PROCEDURE IF EXISTS mais_visualizador$$
 CREATE PROCEDURE mais_visualizador()
 BEGIN
-    SELECT username, COUNT(username) as quantas_visuializacoes FROM VISUALIZACAO
+    SELECT username, COUNT(username) as quantas_visualizacoes FROM VISUALIZACAO
     GROUP BY username
-    ORDER BY quantas_visuializacoes DESC
+    ORDER BY quantas_visualizacoes DESC
     LIMIT 3;
-END//
+END$$
 
-DELIMITER //
-DROP PROCEDURE IF EXISTS ordena_post_usuario;
+DELIMITER $$
+DROP PROCEDURE IF EXISTS ordena_post_usuario$$
 
 CREATE PROCEDURE ordena_post_usuario(userN VARCHAR(45))
 BEGIN
     SELECT * FROM POST WHERE username = userN
     ORDER BY stamp_post DESC;
-END//
+END$$
 
-DELIMITER ;
-DROP PROCEDURE IF EXISTS referenciam_usu;
-CREATE PROCEDURE referenciam_usu(user_ VARCHAR(45))    
-SELECT POST.username
-FROM POST
-INNER JOIN TAG_USUARIO_POST ON TAG_USUARIO_POST.idPOST = POST.idPOST
-WHERE TAG_USUARIO_POST.username = user_;  
-
+DELIMITER $$
+DROP PROCEDURE IF EXISTS referenciam_usu$$
+CREATE PROCEDURE referenciam_usu(user_ VARCHAR(45))   
+BEGIN 
+	SELECT POST.username
+	FROM POST
+	INNER JOIN TAG_USUARIO_POST ON TAG_USUARIO_POST.idPOST = POST.idPOST
+	WHERE TAG_USUARIO_POST.username = user_;  
+END $$
 
 ALTER TABLE POST
 ADD stamp_post TIMESTAMP DEFAULT current_timestamp NOT NULL COMMENT 'momento em que a publicação do post aconteceu';

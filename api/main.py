@@ -340,13 +340,13 @@ def get_url_passaros():
         print(e)
         return {"error": f"Não foi possivel encontrar url a partir das tags"}
 
-@app.get("/post/vizualizador")
+@app.get("/post/visualizador")
 def get_url_passaros():
     busca = Busca(connection)
     try:
-        return busca.mais_visu()
+        return busca.mais_visualizador()
     except Exception as e:
         print(e)
-        return {"error": f"Não foi possivel encontrar o usuário que mais vizualiza"}
+        return {"error": f"Não foi possivel encontrar o usuário que mais visualiza"}
 
 

@@ -76,7 +76,7 @@ class Busca():
                     f'Não posso encontrar url de fotos de passaros')
         return None
 
-    def mais_visu(self):
+    def mais_visualizador(self):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(

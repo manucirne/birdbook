@@ -69,9 +69,9 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS mais_visualizador$$
 CREATE PROCEDURE mais_visualizador()
 BEGIN
-    SELECT username, COUNT(username) as quantas_visuializacoes FROM VISUALIZACAO
+    SELECT username, COUNT(username) as quantas_visualizacoes FROM VISUALIZACAO
     GROUP BY username
-    ORDER BY quantas_visuializacoes DESC
+    ORDER BY quantas_visualizacoes DESC
     LIMIT 3;
 END$$
 
