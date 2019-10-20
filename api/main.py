@@ -14,6 +14,8 @@ from usuario import Usuario
 from cidade import Cidade
 from visualizacao import Visualizacao
 from acesso import Acesso
+from joinha import Joinha
+from busca import Busca
 
 sys.path.append(os.getcwd())
 
@@ -37,7 +39,7 @@ class usuarioObj(BaseModel):
     nome: str
     email: str
     username: str
-    idCidade: str
+    idCidade: int
 
 class cidadeObj(BaseModel):
     cidade: str
@@ -45,8 +47,12 @@ class cidadeObj(BaseModel):
     
 class joinhaObj(BaseModel):
     user_id: str
-    post_id: str
-    reacao: str
+    post_id: int
+    reacao: int
+
+class joinhaUpdateObj(BaseModel):
+    user_id: str
+    post_id: int
     
 class postObj(BaseModel):
     user_id: str
@@ -166,34 +172,6 @@ def delete_usuario(usuario_id: str):
     except Exception as e:
         return {"error": f"Não foi possivel delerar o usuário {usuario_id} passaro"}
 
-# @app.post("/joinha")
-# def add_joinha(user_id: str):
-#     pas = Passaro(connection)
-#     try:
-#         pas.remove(passaro_id.lower())
-#         return {}
-#     except Exception as e:
-#         return {"error": "Não foi possivel adicionar joinha"}
-
-# @app.post("/post")
-# def add_post(user_id: str):
-#     pas = Passaro(connection)
-#     try:
-#         pas.remove(passaro_id.lower())
-#         return {}
-#     except Exception as e:
-#         return {"error": "Não foi possivel adicionar post"}
-
-
-# @app.delete("/post")
-# def add_post(item: postObj):
-#     return []
-#     pas = Passaro(connection)
-#     try:
-#         pas.remove(passaro_id.lower())
-#         return {}
-#     except Exception as e:
-#         return {"error": "Não foi possivel adicionar passaro"}
 
 
 @app.post("/cidade")
@@ -284,3 +262,91 @@ def get_posts_id(post_id:str):
         print(e)
         return {"error": "Não foi possivel encontrar posts"}
     return {}
+
+@app.post("/joinha")
+def add_joinha(item: joinhaObj):
+    joinha = Joinha(connection)
+    try:
+        joinha.adiciona(item.user_id, item.post_id, item.reacao)
+        return {}
+    except Exception as e:
+        print(e)
+        return {"error": "Não foi possivel adicionar joinha"}
+
+@app.put("/joinha")
+def update_joinha(item: joinhaObj):
+    joinha = Joinha(connection)
+    try:
+        joinha.muda_reacao(item.user_id, item.post_id, item.reacao)
+        return {}
+    except Exception as e:
+        return {"error": "Não foi possivel adicionar joinha"}
+
+@app.delete("/joinha")
+def delete_joinha(item: joinhaUpdateObj):
+    joinha = Joinha(connection)
+    try:
+        joinha.remove(item.user_id, item.post_id)
+        return {}
+    except Exception as e:
+        return {"error": "Não foi possivel remover joinha"}
+
+
+
+
+@app.get("/user/{user_id}/posts")
+def get_posts_usuario(user_id: str):
+    busca = Busca(connection)
+    try:
+        return busca.cron_rev(user_id)
+    except Exception as e:
+        print(e)
+        return {"error": "Não foi possivel encontrar posts"}
+
+@app.get("/cidade/pop")
+def get_pop_cidade():
+    busca = Busca(connection)
+    try:
+        return busca.pop_cidade()
+    except Exception as e:
+        print(e)
+        return {"error": "Não foi possivel encontrar o mais popular de cada cidade"}
+
+@app.get("/user/{user_id}/ref")
+def get_posts_usuario(user_id: str):
+    busca = Busca(connection)
+    try:
+        return busca.ref_usuario(user_id)
+    except Exception as e:
+        print(e)
+        return {"error": f"Não foi possivel encontrar usuarios que referenciam o usuário: {user_id}"}
+
+@app.get("/acesso")
+def get_posts_usuario():
+    busca = Busca(connection)
+    try:
+        return busca.tabela_cruz()
+    except Exception as e:
+        print(e)
+        return {"error": f"Não foi possivel encontrar a tabela cruzada"}
+
+
+@app.get("/passaro/url")
+def get_url_passaros():
+    busca = Busca(connection)
+    try:
+        return busca.url_passaro()
+    except Exception as e:
+        print(e)
+        return {"error": f"Não foi possivel encontrar url a partir das tags"}
+
+@app.get("/post/vizualizador")
+def get_url_passaros():
+    busca = Busca(connection)
+    try:
+        return busca.mais_visu()
+    except Exception as e:
+        print(e)
+        return {"error": f"Não foi possivel encontrar o usuário que mais vizualiza"}
+
+

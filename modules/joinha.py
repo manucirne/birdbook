@@ -38,11 +38,11 @@ class Joinha():
                 raise ValueError(
                     f'Post com idPOST = {idPOST} não pôde ter a reação aterada pelo usuário {username}')
 
-    def remove(self, idPOST, username):
+    def remove(self,username,idPOST):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'DELETE FROM JOINHA WHERE username=%s AND idPOST=(%s)', (username, idPOST))
+                    'DELETE FROM JOINHA WHERE username=%s and idPOST=%s;', (username, idPOST))
                 self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
