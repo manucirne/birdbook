@@ -314,8 +314,7 @@ class TestProjeto(unittest.TestCase):
         # Pega todas as cidades
         cids = cid.lista()
 
-        oldPst = ('Um novo passaro',
-                  'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
+        oldPst = ('Um novo passaro','Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
         oldUser = ('david', "david@passaros.com",
                    "David Fogelman", cids[0][0])
 
@@ -324,6 +323,8 @@ class TestProjeto(unittest.TestCase):
         self.assertSequenceEqual(res, oldUser)
 
         id = res[0]
+
+
         pst.adiciona(id, *oldPst)
 
         psts = pst.lista()
