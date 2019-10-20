@@ -10,6 +10,7 @@ class Passaro():
             try:
                 cursor.execute(
                     'INSERT INTO PASSARO (tag_PASSARO, especie, nome_popular) VALUES (%s,%s,%s);', (tag, especie, nome_pop))
+                self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso inserir {tag}, {especie}, {nome_pop} na tabela passaro')
@@ -77,11 +78,7 @@ class Passaro():
             try:
                 cursor.execute(
                     'UPDATE PASSARO SET especie=%s, nome_popular=%s WHERE tag_PASSARO=%s;', (especie, nome_pop, tag))
-                res = cursor.fetchone()
-                if res:
-                    return res[0]
-                else:
-                    return None
+                self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(
                     f'Não posso encontrar {tag} na tabela passaro')
@@ -91,5 +88,6 @@ class Passaro():
             try:
                 cursor.execute(
                     'DELETE FROM PASSARO WHERE tag_PASSARO=%s;', (tag))
+                self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Não posso deletar {tag} na tabela passaro')

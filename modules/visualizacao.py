@@ -18,7 +18,7 @@ class Visualizacao():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'SELECT * FROM VISUALIZACAO WHERE idACESSO=%s and idPOST=%s and username=%s;', (idACESSO, idPOST, username))
+                    'SELECT idACESSO, idPOST, username, stamp FROM VISUALIZACAO WHERE idACESSO=%s and idPOST=%s and username=%s;', (idACESSO, idPOST, username))
                 res = cursor.fetchall()
                 if res:
                     return res
@@ -44,7 +44,7 @@ class Visualizacao():
 
     # Uma vizualização não pode ser alterada
 
-    def delete(self, idACESSO, idPOST, username):
+    def remove(self, idACESSO, idPOST, username):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(

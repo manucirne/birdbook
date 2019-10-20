@@ -4,18 +4,21 @@ import logging
 import os
 import os.path
 import re
+import sys
 import subprocess
 import unittest
 import pymysql
 
+sys.path.append(os.path.join(os.getcwd(), '..', 'modules'))
 from passaro import Passaro
 from post import Post
 from usuario import Usuario
 from cidade import Cidade
 from visualizacao import Visualizacao
 from acesso import Acesso
+from joinha import Joinha
 
-
+sys.path.append(os.getcwd())
 class TestProjeto(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -436,6 +439,55 @@ class TestProjeto(unittest.TestCase):
         res = pst.lista()
         self.assertFalse(res)
 
+    def test_adiciona_acesso(self):
+        conn = self.__class__.connection
+        aces = Acesso(conn)
+
+        oldAces = ('1.2.3.4', 'Tor Browser', 'Dell')
+        aces.adiciona(*oldAces)
+
+        ip = aces.acha_IP(oldAces[0])
+        br = aces.acha_browser(oldAces[1])
+        ap = aces.acha_aparelho(oldAces[2])
+
+        self.assertTrue(any(elem in ip[0] for elem in oldAces))
+        self.assertTrue(any(elem in br[0] for elem in oldAces))
+        self.assertTrue(any(elem in ap[0] for elem in oldAces))
+
+        id = ip[0][0]
+        aces.remove(id)
+
+        res = aces.lista()
+        self.assertIsNone(res)
+
+    def test_lista_acesso(self):
+        conn = self.__class__.connection
+        aces = Acesso(conn)
+        allAcess = [('1.2.3.4', 'Tor Browser', 'Dell'),
+                    ('4.3.2.1', 'Microsoft Edge', 'Celular da Xuxa')
+                    ]
+        # Verifica que ainda não tem pássaros no sistema.
+        res = aces.lista()
+        self.assertFalse(res)
+
+        # Adiciona alguns perigos.
+        acess_id = []
+        for a in allAcess:
+            aces.adiciona(*a)
+            acess_id.append(aces.acha_IP(a[0])[0])
+
+        # Verifica se os perigos foram adicionados corretamente.
+        res = aces.lista()
+        self.assertCountEqual(res, (acess_id))
+
+        # Remove os perigos.
+        for u in acess_id:
+            aces.remove(u[0])
+
+        # Verifica que todos os perigos foram removidos.
+        res = aces.lista()
+        self.assertFalse(res)
+
     def test_adiciona_vizualizacao(self):
         conn = self.__class__.connection
         pst = Post(conn)
@@ -463,14 +515,65 @@ class TestProjeto(unittest.TestCase):
         aces.adiciona('127.0.0.1', 'Chrome', 'Android')
         res = aces.lista()
         idAcesso = res[0][0]
-        vis.adiciona(idAcesso, idAcesso, id)
-        res = vis.lista()
-        self.assertFalse(res)
 
+        oldVis = (idAcesso, idPost, id)
+        vis.adiciona(*oldVis)
+
+        viss = vis.lista()
+        self.assertTrue(any(elem in viss[0] for elem in oldVis))
+
+        # DELETA POST
         pst.remove(idPost)
         res = pst.lista()
         self.assertFalse(res)
 
+        # TESTA TRIGGER DE POST
+        viss = vis.lista()
+        self.assertFalse(viss)
+
+        acess = aces.lista()
+        self.assertFalse(acess)
+
+
+def test_remove_vizualizacao(self):
+    conn = self.__class__.connection
+    pst = Post(conn)
+    cid = Cidade(conn)
+    user = Usuario(conn)
+    vis = Visualizacao(conn)
+    aces = Acesso(conn)
+
+    # Pega todas as cidades
+    cids = cid.lista()
+
+    oldPst = ('Um novo passaro',
+              'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
+    oldUser = ('david', "david@passaros.com",
+               "David Fogelman", cids[0][0])
+
+    user.adiciona(*oldUser)
+    id = oldUser[0]
+    pst.adiciona(id, *oldPst)
+
+    psts = pst.lista()
+    idPost = psts[0][0]
+
+    aces.adiciona('127.0.0.1', 'Chrome', 'Android')
+    res = aces.lista()
+    idAcesso = res[0][0]
+
+    oldVis = (idAcesso, idPost, id)
+    vis.adiciona(*oldVis)
+
+    viss = vis.lista()
+    self.assertTrue(any(elem in viss[0] for elem in oldVis))
+
+    vis.remove(*oldVis)
+    res = vis.lista()
+    self.assertIsNone(res)
+
+    acess = aces.lista()
+    self.assertIsNone(acess)
 
     def test_adiciona_tags(self):
         conn = self.__class__.connection
@@ -489,7 +592,7 @@ class TestProjeto(unittest.TestCase):
                    "David Fogelman", cids[0][0])
 
         oldUserju = ('juju', "julia@passaros.com",
-                   "Julia Pessoa", cids[0][0])
+                     "Julia Pessoa", cids[0][0])
 
         user.adiciona(*oldUser)
         user.adiciona(*oldUserju)
@@ -518,7 +621,7 @@ class TestProjeto(unittest.TestCase):
         tagusu = pst.lista_tags_usuario()
         self.assertTrue(any(elem in tagusu[0] for elem in dici_tags['@']))
 
-    def test_remove_usu_tags(self): #removendo usuario tag é remomvida
+    def test_remove_usu_tags(self):  # removendo usuario tag é remomvida
         conn = self.__class__.connection
         pst = Post(conn)
         cid = Cidade(conn)
@@ -534,7 +637,7 @@ class TestProjeto(unittest.TestCase):
                    "David Fogelman", cids[0][0])
 
         oldUserju = ('juju', "julia@passaros.com",
-                   "Julia Pessoa", cids[0][0])
+                     "Julia Pessoa", cids[0][0])
 
         oldPas = ('sabia', 'saiazito sabioluns', 'sabii')
 
@@ -573,6 +676,44 @@ class TestProjeto(unittest.TestCase):
         tagsP = pst.acha_tags_por_PK_passaro(idPost)
         self.assertIsNone(tagsP)
 
+    def test_adiciona_reacao(self):
+        conn = self.__class__.connection
+
+        joi = Joinha(conn)
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+        pas = Passaro(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada @juju #sabia', 'https://passarito.com')
+        oldPas = ('sabia', 'saiazito sabioluns', 'sabii')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        oldUserju = ('juju', "julia@passaros.com",
+                     "Julia Pessoa", cids[0][0])
+
+        id = user.adiciona(*oldUser)[0]
+        pas.adiciona(*oldPas)
+        pst.adiciona(id, *oldPst)
+
+        user.adiciona(*oldUserju)
+        idJu = user.acha(oldUserju[0])[0]
+
+        psts = pst.lista()
+        res = pst.acha_por_id(psts[0][0])
+        idPost = psts[0][0]
+        dici_tags = pst.parser_post(oldPst[1])
+        pst.cria_tags(dici_tags, idPost)
+
+        joi.adiciona(idJu, idPost, 0)
+        reac = joi.acha_reacao(idJu, idPost)
+
+        self.assertIsNone(reac)
 
 
 def run_sql_script(filename):
@@ -602,7 +743,7 @@ def tearDownModule():
 
 if __name__ == '__main__':
     global config
-    with open('config_tests.json', 'r') as f:
+    with open(os.path.join(os.getcwd(), '..', 'config', 'config_tests.json'), 'r') as f:
         config = json.load(f)
     logging.basicConfig(filename=config['LOGFILE'], level=logging.DEBUG)
     unittest.main(verbosity=2)

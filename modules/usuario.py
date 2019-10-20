@@ -18,7 +18,7 @@ class Usuario():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'SELECT * FROM USUARIO WHERE username =%s', (username))
+                    'SELECT username, email, nome, idCIDADE FROM USUARIO WHERE username =%s', (username))
 
                 res = cursor.fetchone()
                 if res:
@@ -31,7 +31,8 @@ class Usuario():
     def lista(self):
         with self.conn.cursor() as cursor:
             try:
-                cursor.execute('SELECT * FROM USUARIO')
+                cursor.execute(
+                    'SELECT username, email, nome, idCIDADE FROM USUARIO')
 
                 res = cursor.fetchall()
                 if res:
