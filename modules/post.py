@@ -44,7 +44,7 @@ class Post():
         with self.conn.cursor() as cursor:
             try:
                 res = cursor.execute(
-                    'SELECT idPOST, titulo, texto, URL_foto FROM POST WHERE deleta = False;')
+                    'SELECT idPOST, titulo, texto, URL_foto, username FROM POST WHERE deleta = False;')
 
                 res = cursor.fetchall()
                 if res:
@@ -134,7 +134,7 @@ class Post():
                 self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Não foi possível criar as tags')
-    
+
     def lista_tags_passaro(self):
         with self.conn.cursor() as cursor:
             try:
@@ -144,7 +144,8 @@ class Post():
                 if res:
                     return res
             except:
-                raise ValueError(f'Não foi possível listar as tags de TAG_PASSARO_POST')
+                raise ValueError(
+                    f'Não foi possível listar as tags de TAG_PASSARO_POST')
             return None
 
     def lista_tags_usuario(self):
@@ -156,7 +157,8 @@ class Post():
                 if res:
                     return res
             except:
-                raise ValueError(f'Não foi possível listar as tags de TAG_USUARIO_POST')
+                raise ValueError(
+                    f'Não foi possível listar as tags de TAG_USUARIO_POST')
             return None
 
     def acha_tags_por_PK_passaro(self, idPOST):
