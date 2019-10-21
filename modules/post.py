@@ -108,7 +108,6 @@ class Post():
                     for item in dici_tags["#"]:
                         resp[item] = 0
                     for item in dici_tags["#"]:
-                        print(item)
                         cursor.execute('''
                             SELECT COUNT(tag_PASSARO) FROM PASSARO
                             WHERE tag_PASSARO = %s; 
@@ -125,7 +124,6 @@ class Post():
                     for item in dici_tags["@"]:
                         resp_pes[item] = 0
                     for item in dici_tags["@"]:
-                        print(item)
                         cursor.execute('''
                             SELECT COUNT(username) FROM USUARIO
                             WHERE username = %s; 
@@ -137,7 +135,7 @@ class Post():
                             INSERT INTO TAG_USUARIO_POST (idPost,username)
                             VALUES(%s,%s)
                             ''', (id_post, usu))
-                #self.conn.commit()
+            #self.conn.commit() 
             except pymysql.err.IntegrityError as e:
                 raise ValueError(f'Não foi possível criar as tags')
 
@@ -171,7 +169,7 @@ class Post():
         with self.conn.cursor() as cursor:
             try:
                 res = cursor.execute(
-                    'SELECT tagPASSARO FROM TAG_PASSARO_POST WHERE idPOST = (%s);', (idPOST))
+                    'SELECT tag_PASSARO FROM TAG_PASSARO_POST WHERE idPOST = (%s);', (idPOST))
 
                 res = cursor.fetchone()
                 if res:

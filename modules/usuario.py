@@ -78,8 +78,11 @@ class Usuario():
     def remove(self, username):
         with self.conn.cursor() as cursor:
             try:
+
+                cursor.execute('SET foreign_key_checks = 0;')
                 cursor.execute(
-                    'DELETE FROM USUARIO WHERE username = %s;', (username))
+                    'DELETE FROM USUARIO WHERE username=%s;', (username))
+                cursor.execute('SET foreign_key_checks = 1;')
                 #self.conn.commit()
             except pymysql.err.IntegrityError as e:
                 raise ValueError(

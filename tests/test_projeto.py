@@ -8,6 +8,7 @@ import sys
 import subprocess
 import unittest
 import pymysql
+import time
 
 sys.path.append(os.path.join(os.getcwd(), '..', 'modules'))
 from passaro import Passaro
@@ -17,6 +18,7 @@ from cidade import Cidade
 from visualizacao import Visualizacao
 from acesso import Acesso
 from joinha import Joinha
+from busca import Busca
 
 sys.path.append(os.getcwd())
 class TestProjeto(unittest.TestCase):
@@ -536,45 +538,45 @@ class TestProjeto(unittest.TestCase):
         self.assertFalse(acess)
 
 
-def test_remove_vizualizacao(self):
-    conn = self.__class__.connection
-    pst = Post(conn)
-    cid = Cidade(conn)
-    user = Usuario(conn)
-    vis = Visualizacao(conn)
-    aces = Acesso(conn)
+    def test_remove_vizualizacao(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+        vis = Visualizacao(conn)
+        aces = Acesso(conn)
 
-    # Pega todas as cidades
-    cids = cid.lista()
+        # Pega todas as cidades
+        cids = cid.lista()
 
-    oldPst = ('Um novo passaro',
-              'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
-    oldUser = ('david', "david@passaros.com",
-               "David Fogelman", cids[0][0])
+        oldPst = ('Um novo passaro',
+                'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
+        oldUser = ('david', "david@passaros.com",
+                "David Fogelman", cids[0][0])
 
-    user.adiciona(*oldUser)
-    id = oldUser[0]
-    pst.adiciona(id, *oldPst)
+        user.adiciona(*oldUser)
+        id = oldUser[0]
+        pst.adiciona(id, *oldPst)
 
-    psts = pst.lista()
-    idPost = psts[0][0]
+        psts = pst.lista()
+        idPost = psts[0][0]
 
-    aces.adiciona('127.0.0.1', 'Chrome', 'Android')
-    res = aces.lista()
-    idAcesso = res[0][0]
+        aces.adiciona('127.0.0.1', 'Chrome', 'Android')
+        res = aces.lista()
+        idAcesso = res[0][0]
 
-    oldVis = (idAcesso, idPost, id)
-    vis.adiciona(*oldVis)
+        oldVis = (idAcesso, idPost, id)
+        vis.adiciona(*oldVis)
 
-    viss = vis.lista()
-    self.assertTrue(any(elem in viss[0] for elem in oldVis))
+        viss = vis.lista()
+        self.assertTrue(any(elem in viss[0] for elem in oldVis))
 
-    vis.remove(*oldVis)
-    res = vis.lista()
-    self.assertIsNone(res)
+        vis.remove(*oldVis)
+        res = vis.lista()
+        self.assertIsNone(res)
 
-    acess = aces.lista()
-    self.assertIsNone(acess)
+        acess = aces.lista()
+        self.assertIsNone(acess)
 
     def test_adiciona_tags(self):
         conn = self.__class__.connection
@@ -669,7 +671,7 @@ def test_remove_vizualizacao(self):
         tagusu = pst.lista_tags_usuario()
         self.assertTrue(any(elem in tagusu[0] for elem in dici_tags['@']))
 
-        user.remove(user.acha(oldUser[0]))
+        user.remove(id)
         res = pst.lista()
         self.assertIsNone(res)
         tagsU = pst.acha_tags_por_PK_usuario(idPost)
@@ -698,7 +700,9 @@ def test_remove_vizualizacao(self):
         oldUserju = ('juju', "julia@passaros.com",
                      "Julia Pessoa", cids[0][0])
 
-        id = user.adiciona(*oldUser)[0]
+        user.adiciona(*oldUser)
+        res = user.lista()
+        id = res[0][0]
         pas.adiciona(*oldPas)
         pst.adiciona(id, *oldPst)
 
@@ -712,9 +716,60 @@ def test_remove_vizualizacao(self):
         pst.cria_tags(dici_tags, idPost)
 
         joi.adiciona(idJu, idPost, 0)
-        reac = joi.acha_reacao(idJu, idPost)
+        reac = joi.acha_reacao(idJu, idPost)[0]
 
-        self.assertIsNone(reac)
+        self.assertIsNotNone(reac)
+        self.assertEqual(reac[0], 0)
+    
+    def test_adiciona_busca(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+        vis = Visualizacao(conn)
+        aces = Acesso(conn)
+        busca = Busca(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada', 'https://passarito.com')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+        newUser = ('david_test', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        user.adiciona(*oldUser)
+        id = oldUser[0]
+        user.adiciona(*newUser)
+
+        idNew = newUser[0]
+        pst.adiciona(id, *oldPst)
+        psts = pst.lista()
+        idPost = psts[0][0]
+
+        aces.adiciona('127.0.0.1', 'Chrome', 'Android')
+        res = aces.lista()
+        idAcesso = res[0][0]
+
+        oldVis = (idAcesso, idPost, idNew)
+        vis.adiciona(*oldVis)
+        time.sleep(5)
+        newVis = (idAcesso, idPost, id)
+        vis.adiciona(*newVis)
+        time.sleep(1)
+        vis.adiciona(*newVis)
+        viss = vis.lista()
+        self.assertTrue(any(elem in viss[0] for elem in oldVis))
+
+        bus = busca.mais_visualizador()
+        self.assertIsNotNone(bus)
+        self.assertSequenceEqual(bus, (oldUser[0], 2))
+
+        cru = busca.tabela_cruz()[0]
+        self.assertIsNotNone(cru)
+        self.assertSequenceEqual(cru, ('Android', 'Chrome', 1))
 
 
 def run_sql_script(filename):

@@ -331,7 +331,7 @@ def get_posts_usuario():
         return {"error": f"Não foi possivel encontrar a tabela cruzada"}
 
 
-@app.get("/passaro/url")
+@app.get("/passaro/tag/url")
 def get_url_passaros():
     busca = Busca(connection)
     try:
@@ -340,7 +340,7 @@ def get_url_passaros():
         print(e)
         return {"error": f"Não foi possivel encontrar url a partir das tags"}
 
-@app.get("/post/visualizador")
+@app.get("/visualizador/post")
 def get_url_passaros():
     busca = Busca(connection)
     try:

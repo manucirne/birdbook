@@ -47,12 +47,12 @@ class Busca():
                 raise ValueError(
                     f'Não posso encontrar usuários que referenciam ele')
         return None
-# Finalizar aqui
+
     def tabela_cruz(self):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'CALL referenciam_usu()')
+                    'SELECT * FROM aparelho_browser;')
                 res = cursor.fetchall()
                 if res:
                     return res
@@ -66,7 +66,7 @@ class Busca():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'CALL foto_passaro()')
+                    'CALL foto_passaro();')
                 res = cursor.fetchall()
                 if res:
                     return res
@@ -80,7 +80,7 @@ class Busca():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'CALL mais_visualizador()')
+                    'CALL mais_visualizador();')
                 res = cursor.fetchone()
                 if res:
                     return res

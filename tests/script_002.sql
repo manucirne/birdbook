@@ -72,7 +72,7 @@ BEGIN
     SELECT username, COUNT(username) as quantas_visualizacoes FROM VISUALIZACAO
     GROUP BY username
     ORDER BY quantas_visualizacoes DESC
-    LIMIT 3;
+    LIMIT 1;
 END$$
 
 DELIMITER $$
@@ -104,3 +104,10 @@ DROP VIEW IF EXISTS exibe_posts;
 CREATE VIEW exibe_posts AS
 	SELECT username, titulo, texto, stamp_post FROM POST
     ORDER BY stamp_post DESC;
+
+DROP VIEW IF EXISTS aparelho_browser;
+
+CREATE VIEW aparelho_browser AS
+  SELECT Aparelho, Browser, count(Browser) as cnt
+  FROM ACESSO 
+  group by Aparelho, Browser;

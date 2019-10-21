@@ -72,7 +72,7 @@ BEGIN
     SELECT username, COUNT(username) as quantas_visualizacoes FROM VISUALIZACAO
     GROUP BY username
     ORDER BY quantas_visualizacoes DESC
-    LIMIT 3;
+    LIMIT 1;
 END$$
 
 DELIMITER $$
