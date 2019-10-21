@@ -413,6 +413,7 @@ class TestProjeto(unittest.TestCase):
         pst = Post(conn)
         cid = Cidade(conn)
         user = Usuario(conn)
+        busca = Busca(conn)
 
         # Pega todas as cidades
         cids = cid.lista()
@@ -429,6 +430,7 @@ class TestProjeto(unittest.TestCase):
         id = res[0]
         for p in psts:
             pst.adiciona(id, *p)
+            time.sleep(1)
 
         res = pst.lista()
         posts_id = [p[0] for p in res]
@@ -441,6 +443,9 @@ class TestProjeto(unittest.TestCase):
         # Verifica que todos os perigos foram removidos.
         res = pst.lista()
         self.assertFalse(res)
+        self.assertIsNotNone(busca.cron_rev(id))
+        # Teste de ordem reversa
+        self.assertEqual(busca.cron_rev(id)[0][1], psts[1][0])
 
     def test_adiciona_acesso(self):
         conn = self.__class__.connection
@@ -755,7 +760,7 @@ class TestProjeto(unittest.TestCase):
 
         oldVis = (idAcesso, idPost, idNew)
         vis.adiciona(*oldVis)
-        time.sleep(5)
+        time.sleep(2)
         newVis = (idAcesso, idPost, id)
         vis.adiciona(*newVis)
         time.sleep(1)
@@ -770,6 +775,103 @@ class TestProjeto(unittest.TestCase):
         cru = busca.tabela_cruz()[0]
         self.assertIsNotNone(cru)
         self.assertSequenceEqual(cru, ('Android', 'Chrome', 1))
+
+    def test_url_tag_ref_usr(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+        pas = Passaro(conn)
+        busca = Busca(conn)
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada @juju #sabia', 'https://passarito.com')
+        oldPas = ('sabia', 'saiazito sabioluns', 'sabii')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        oldUserju = ('juju', "julia@passaros.com",
+                     "Julia Pessoa", cids[0][0])
+
+        user.adiciona(*oldUser)
+        user.adiciona(*oldUserju)
+        res = user.acha(oldUser[0])
+        resju = user.acha(oldUserju[0])
+        pas.adiciona(*oldPas)
+
+        id = res[0]
+        pst.adiciona(id, *oldPst)
+
+        psts = pst.lista()
+        self.assertTrue(any(elem in psts[0] for elem in oldPst))
+
+        res = pst.acha_por_id(psts[0][0])
+        self.assertSequenceEqual(res, psts[0])
+
+        idPost = psts[0][0]
+        dici_tags = pst.parser_post(oldPst[1])
+
+        pst.cria_tags(dici_tags, idPost)
+        bus = busca.url_passaro()[0]
+        self.assertIsNotNone(bus)
+        self.assertSequenceEqual((oldPas[0], oldPst[-1]), bus)
+
+        # Teste Ref
+        self.assertIsNone(busca.ref_usuario(oldUser[0]))
+        self.assertEqual(busca.ref_usuario(oldUserju[0])[0][0], oldUser[0])
+    
+    def test_busca_mais_pop(self):
+        conn = self.__class__.connection
+        pst = Post(conn)
+        cid = Cidade(conn)
+        user = Usuario(conn)
+        pas = Passaro(conn)
+        aces = Acesso(conn)
+        vis = Visualizacao(conn)
+        busca = Busca(conn)
+
+
+        # Pega todas as cidades
+        cids = cid.lista()
+
+        oldPst = ('Um novo passaro',
+                  'Encontrei um passaro novo na minha caminhada @juju #sabia', 'https://passarito.com')
+        oldPas = ('sabia', 'saiazito sabioluns', 'sabii')
+        oldUser = ('david', "david@passaros.com",
+                   "David Fogelman", cids[0][0])
+
+        oldUserju = ('juju', "julia@passaros.com",
+                     "Julia Pessoa", cids[0][0])
+
+        user.adiciona(*oldUser)
+        user.adiciona(*oldUserju)
+        id = oldUser[0]
+
+        idJu = oldUserju[0]
+        pst.adiciona(id, *oldPst)
+        pst.adiciona(idJu, *oldPst)
+
+        psts = pst.lista()
+        res = pst.acha_por_id(psts[0][0])
+
+        aces.adiciona('127.0.0.1', 'Chrome', 'Android')
+        res = aces.lista()
+        idAcesso = res[0][0]
+
+        oldVis = [(idAcesso, psts[0][0], idJu),
+        (idAcesso, psts[0][0], idJu),
+        (idAcesso, psts[0][0], idJu),
+        (idAcesso, psts[1][0], id),
+        (idAcesso, psts[1][0], id)]
+
+        for v in oldVis:
+            vis.adiciona(*v)
+            time.sleep(1)
+
+
 
 
 def run_sql_script(filename):

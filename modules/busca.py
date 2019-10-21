@@ -9,7 +9,7 @@ class Busca():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'CALL ordena_post_usuario(%s)', (username))
+                    'CALL ordena_post_usuario(%s);', (username))
                 res = cursor.fetchall()
                 if res:
                     return res
@@ -24,21 +24,21 @@ class Busca():
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'CALL mais_pop()')
+                    'CALL mais_pop();')
                 res = cursor.fetchall()
                 if res:
                     return res
             except pymysql.err.IntegrityError as e:
                 print(e)
                 raise ValueError(
-                    f'Não posso encontrar o mais popular da cidade')
+                    f'Não posso encontrar o mais popular de cada cidade')
         return None
     
     def ref_usuario(self, username):
         with self.conn.cursor() as cursor:
             try:
                 cursor.execute(
-                    'CALL referenciam_usu(%s)', (username))
+                    'CALL referenciam_usu(%s);', (username))
                 res = cursor.fetchall()
                 if res:
                     return res

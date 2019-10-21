@@ -10,7 +10,7 @@ DROP DATABASE IF EXISTS birdbook ;
 -- -----------------------------------------------------
 -- DATABASE birdbook
 -- -----------------------------------------------------
-CREATE DATABASE IF NOT EXISTS birdbook DEFAULT CHARACTER SET utf8 ;
+CREATE DATABASE IF NOT EXISTS birdbook DEFAULT CHARACTER SET utf8mb4 ;
 -- -----------------------------------------------------
 -- Schema birdbook
 -- -----------------------------------------------------
